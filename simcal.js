@@ -12,8 +12,8 @@
     // functions.  for example:
 
     var today = new Date(); // used in defaults
-    var months = 'January,February,March,April,May,June,July,August,September,October,November,December'.split(',');
-    var monthlengths = '31,28,31,30,31,30,31,31,30,31,30,31'.split(',');
+    var months = 'January February March April May June July August September October November December'.split(' ');
+    var monthlengths = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
     var dateRegEx = /^\d{1,2}\/\d{1,2}\/\d{2}|\d{4}$/;
     var yearRegEx = /^\d{4,4}$/;
 
@@ -32,7 +32,7 @@
 
         setupYearRange();
         /** extracts and setup a valid year range from the opts object **/
-        function setupYearRange () {
+        function setupYearRange() {
 
             var startyear, endyear;
             if (opts.startdate.constructor == Date) {
@@ -71,11 +71,11 @@
         /** HTML factory for the actual datepicker table element **/
         // has to read the year range so it can setup the correct years in our HTML <select>
         function newDatepickerHTML () {
-
-            var years = [];
-
+            var years = []
+            ,   i
+            ;
             // process year range into an array
-            for (var i = 0; i <= opts.endyear - opts.startyear; i ++) years[i] = opts.startyear + i;
+            for (i = 0; i <= opts.endyear - opts.startyear; i++) years[i] = opts.startyear + i;
 
             // build the table structure
             var table = jQuery('<table class="datepicker" cellpadding="0" cellspacing="0"></table>');
@@ -85,31 +85,33 @@
 
             // month select field
             var monthselect = '<select name="month">';
-            for (var i in months) monthselect += '<option value="'+i+'">'+months[i]+'</option>';
+            for (i in months) monthselect += '<option value="' + i + '">' + months[i] + '</option>';
             monthselect += '</select>';
 
             // year select field
             var yearselect = '<select name="year">';
-            for (var i in years) yearselect += '<option>'+years[i]+'</option>';
+            for (i in years) yearselect += '<option>' + years[i] + '</option>';
             yearselect += '</select>';
 
-            jQuery("thead",table).append('<tr class="controls"><th colspan="7"><span class="prevMonth">&laquo;</span>&nbsp;'+monthselect+yearselect+'&nbsp;<span class="nextMonth">&raquo;</span></th></tr>');
-            jQuery("thead",table).append('<tr class="days"><th>S</th><th>M</th><th>T</th><th>W</th><th>T</th><th>F</th><th>S</th></tr>');
-            jQuery("tfoot",table).append('<tr><td colspan="2"><span class="today">today</span></td><td colspan="3">&nbsp;</td><td colspan="2"><span class="close">close</span></td></tr>');
-            for (var i = 0; i < 6; i++) jQuery("tbody",table).append('<tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>');
+            jQuery("thead", table).append('<tr class="controls"><th colspan="7"><span class="prevMonth">&laquo;</span>&nbsp;' + monthselect + yearselect + '&nbsp;<span class="nextMonth">&raquo;</span></th></tr>');
+            jQuery("thead", table).append('<tr class="days"><th>S</th><th>M</th><th>T</th><th>W</th><th>T</th><th>F</th><th>S</th></tr>');
+            jQuery("tfoot", table).append('<tr><td colspan="2"><span class="today">today</span></td><td colspan="3">&nbsp;</td><td colspan="2"><span class="close">close</span></td></tr>');
+            for (i = 0; i < 6; i++) jQuery("tbody", table).append('<tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>');
             return table;
         }
 
         /** get the real position of the input (well, anything really) **/
         //http://www.quirksmode.org/js/findpos.html
-        function findPosition (obj) {
-            var curleft = curtop = 0;
+        function findPosition(obj) {
+            var curleft, curtop
+            ;
+            curleft = curtop = 0;
             if (obj.offsetParent) {
                 do {
                     curleft += obj.offsetLeft;
                     curtop += obj.offsetTop;
-                } while (obj = obj.offsetParent);
-                return [curleft,curtop];
+                } while ((obj = obj.offsetParent)); // not a syntax error
+                return [curleft, curtop];
             } else {
                 return false;
             }
@@ -119,12 +121,13 @@
         // initial calendar load (e is null)
         // prevMonth & nextMonth buttons
         // onchange for the select fields
-        function loadMonth (e, el, datepicker, chosendate) {
+        function loadMonth(e, el, datepicker, chosendate) {
 
             // reference our years for the nextMonth and prevMonth buttons
-            var mo = jQuery("select[name=month]", datepicker).get(0).selectedIndex;
-            var yr = jQuery("select[name=year]", datepicker).get(0).selectedIndex;
-            var yrs = jQuery("select[name=year] option", datepicker).get().length;
+            var mo  = jQuery("select[name=month]", datepicker).get(0).selectedIndex
+            ,   yr  = jQuery("select[name=year]", datepicker).get(0).selectedIndex
+            ,   yrs = jQuery("select[name=year] option", datepicker).get().length
+            ;
 
             // first try to process buttons that may change the month we're on
             if (e && jQuery(e.target).hasClass('prevMonth')) {
@@ -159,14 +162,14 @@
             var cells = jQuery("tbody td", datepicker).unbind().empty().removeClass('date');
 
             // figure out what month and year to load
-            var m = jQuery("select[name=month]", datepicker).val();
-            var y = jQuery("select[name=year]", datepicker).val();
-            var d = new Date(y, m, 1);
-            var startindex = d.getDay();
-            var numdays = monthlengths[m];
+            var m = jQuery("select[name=month]", datepicker).val()
+            ,   y = jQuery("select[name=year]", datepicker).val()
+            ,   d = new Date(y, m, 1)
+            ,   startindex = d.getDay()
+            ,   numdays = monthlengths[m];
 
             // http://en.wikipedia.org/wiki/Leap_year
-            if (1 == m && ((y%4 == 0 && y%100 != 0) || y%400 == 0)) numdays = 29;
+            if (1 == m && ((y % 4 == 0 && y % 100 != 0) || y % 400 == 0)) numdays = 29;
 
             // test for end dates (instead of just a year range)
             if (opts.startdate.constructor == Date) {
@@ -181,30 +184,26 @@
             // walk through the index and populate each cell, binding events too
             for (var i = 0; i < numdays; i++) {
 
-                var cell = jQuery(cells.get(i+startindex)).removeClass('chosen');
+                var cell = jQuery(cells.get(i + startindex)).removeClass('chosen');
 
                 // test that the date falls within a range, if we have a range
                 if (
                     (yr || ((!startDate && !startMonth) || ((i+1 >= startDate && mo == startMonth) || mo > startMonth))) &&
                     (yr + 1 < yrs || ((!endDate && !endMonth) || ((i+1 <= endDate && mo == endMonth) || mo < endMonth)))) {
 
-                    cell
-                    .text(i+1)
-                    .addClass('date')
-                    .hover(
-                        function () {
+                    cell.text(i + 1).addClass('date').hover(
+                        function() {
                             jQuery(this).addClass('over');
                         },
-                        function () {
+                        function() {
                             jQuery(this).removeClass('over');
-                        })
-                    .click(function () {
+                        }).click(function() {
                         var chosenDateObj = new Date(jQuery("select[name=year]", datepicker).val(), jQuery("select[name=month]", datepicker).val(), jQuery(this).text());
                         closeIt(el, datepicker, chosenDateObj);
                     });
 
                     // highlight the previous chosen date
-                    if (i+1 == chosendate.getDate() && m == chosendate.getMonth() && y == chosendate.getFullYear()) cell.addClass('chosen');
+                    if (i + 1 == chosendate.getDate() && m == chosendate.getMonth() && y == chosendate.getFullYear()) cell.addClass('chosen');
                 }
             }
         }
@@ -219,7 +218,7 @@
             datepicker.remove();
             datepicker = null;
             jQuery.data(el.get(0), "simpleDatepicker", {
-                hasDatepicker : false
+                hasDatepicker: false
             });
         }
 
@@ -229,37 +228,38 @@
             // functions and vars declared here are created for each matched element. so if
             // your functions need to manage or access per-node state you can defined them
             // here and use $this to get at the DOM element
-
-            if ( jQuery(this).is('input') && 'text' == jQuery(this).attr('type')) {
+            if (jQuery(this).is('input') && 'text' == jQuery(this).attr('type')) {
 
                 var datepicker;
                 jQuery.data(jQuery(this).get(0), "simpleDatepicker", {
-                    hasDatepicker : false
+                    hasDatepicker: false
                 });
 
                 // open a datepicker on the click event
-                jQuery(this).click(function (ev) {
+                jQuery(this).click(function(ev) {
 
-                    var $this = jQuery(ev.target);
+                    var $this = jQuery(ev.target)
+                    ,   chosendate
+                    ;
 
                     if (false == jQuery.data($this.get(0), "simpleDatepicker").hasDatepicker) {
 
                         // store data telling us there is already a datepicker
                         jQuery.data($this.get(0), "simpleDatepicker", {
-                            hasDatepicker : true
+                            hasDatepicker: true
                         });
 
                         // validate the form's initial content for a date
                         var initialDate = $this.val();
 
                         if (initialDate && dateRegEx.test(initialDate)) {
-                            var chosendate = new Date(initialDate);
+                            chosendate = new Date(initialDate);
                         } else if (opts.chosendate.constructor == Date) {
-                            var chosendate = opts.chosendate;
+                            chosendate = opts.chosendate;
                         } else if (opts.chosendate) {
-                            var chosendate = new Date(opts.chosendate);
+                            chosendate = new Date(opts.chosendate);
                         } else {
-                            var chosendate = today;
+                            chosendate = today;
                         }
 
                         // insert the datepicker in the DOM
@@ -267,9 +267,10 @@
                         jQuery("body").prepend(datepicker);
 
                         // position the datepicker
-                        var elPos = findPosition($this.get(0));
-                        var x = (parseInt(opts.x) ? parseInt(opts.x) : 0) + elPos[0];
-                        var y = (parseInt(opts.y) ? parseInt(opts.y) : 0) + elPos[1];
+                        var elPos = findPosition($this.get(0))
+                        ,   x = (parseInt(opts.x) ? parseInt(opts.x) : 0) + elPos[0]
+                        ,   y = (parseInt(opts.y) ? parseInt(opts.y) : 0) + elPos[1]
+                        ;
                         jQuery(datepicker).css({
                             position: 'absolute',
                             left: x,
@@ -277,20 +278,20 @@
                         });
 
                         // bind events to the table controls
-                        jQuery("span", datepicker).css("cursor","pointer");
-                        jQuery("select", datepicker).bind('change', function () {
-                            loadMonth (null, $this, datepicker, chosendate);
+                        jQuery("span", datepicker).css("cursor", "pointer");
+                        jQuery("select", datepicker).bind('change', function() {
+                            loadMonth(null, $this, datepicker, chosendate);
                         });
-                        jQuery("span.prevMonth", datepicker).click(function (e) {
-                            loadMonth (e, $this, datepicker, chosendate);
+                        jQuery("span.prevMonth", datepicker).click(function(e) {
+                            loadMonth(e, $this, datepicker, chosendate);
                         });
-                        jQuery("span.nextMonth", datepicker).click(function (e) {
-                            loadMonth (e, $this, datepicker, chosendate);
+                        jQuery("span.nextMonth", datepicker).click(function(e) {
+                            loadMonth(e, $this, datepicker, chosendate);
                         });
-                        jQuery("span.today", datepicker).click(function () {
+                        jQuery("span.today", datepicker).click(function() {
                             closeIt($this, datepicker, new Date());
                         });
-                        jQuery("span.close", datepicker).click(function () {
+                        jQuery("span.close", datepicker).click(function() {
                             closeIt($this, datepicker);
                         });
 
@@ -308,18 +309,18 @@
     // finally, I like to expose default plugin options as public so they can be manipulated.  one
     // way to do this is to add a property to the already-public plugin fn
 
-    jQuery.fn.simpleDatepicker.formatOutput = function (dateObj) {
+    jQuery.fn.simpleDatepicker.formatOutput = function(dateObj) {
         return (dateObj.getMonth() + 1) + "/" + dateObj.getDate() + "/" + dateObj.getFullYear();
     };
 
     jQuery.fn.simpleDatepicker.defaults = {
         // date string matching /^\d{1,2}\/\d{1,2}\/\d{2}|\d{4}$/
-        chosendate : today,
+        chosendate: today,
 
         // date string matching /^\d{1,2}\/\d{1,2}\/\d{2}|\d{4}$/
         // or four digit year
-        startdate : today.getFullYear(),
-        enddate : today.getFullYear() + 1,
+        startdate: today.getFullYear(),
+        enddate: today.getFullYear() + 1,
 
         // offset from the top left corner of the input element
         x : 18, // must be in px

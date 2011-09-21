@@ -1,39 +1,47 @@
 @charset "utf-8";
 
 .datepicker {
+    background: #eee;
     border-collapse: collapse;
     border: 2px solid #999;
+    font-size: 8pt;
     position: absolute;
+    width: auto;
+    z-index: 9999;
 }
-.datepicker tr.controls th {
-    height: 22px;
-    font-size: 11px;
+.datepicker * {
+    color: #000;
+    font: 1em/1.5em sans-serif;
+    text-align: center;
+    white-space: nowrap;
 }
-.datepicker select {
-    font-size: 11px;
-}
-.datepicker tr.days th {
-    height: 18px;
+.datepicker thead th {
+    height: 3em;
 }
 .datepicker tfoot td {
-    height: 18px;
-    text-align: center;
+    height: 2.5em;
     text-transform: capitalize;
 }
-.datepicker th, .datepicker tfoot td {
-    background: #eee;
-    font: 10px/18px Verdana, Arial, Helvetica, sans-serif;
+.datepicker th span {
+    font-size: 1.3em; /* header only */
 }
-.datepicker th span, .datepicker tfoot td span {
-    font-weight: bold;
+.datepicker th span,
+.datepicker tfoot td span {
+    border: 1px solid #eee;
+    margin: .25em;
+    padding: .2em .5em;
+}
+.datepicker span:hover {
+    background: #fff;
+    border: 1px outset #ccc;
+    color: #c00;
 }
 .datepicker tbody td {
-    width: 24px;
-    height: 24px;
-    border: 1px solid #ccc;
-    font: 11px/22px Arial, Helvetica, sans-serif;
-    text-align: center;
     background: #fff;
+    border: 1px solid #ccc;
+    height: 2.5em;
+    text-align: center;
+    width: 2.5em;
 }
 .datepicker tbody td.date {
     cursor: pointer;

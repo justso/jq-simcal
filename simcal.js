@@ -1,9 +1,7 @@
 /**
     the script only works on "input [type=text]"
-
+    don't declare anything out here in the global namespace
 **/
-
-// don't declare anything out here in the global namespace
 
 (function($) { // create private scope (inside you can use $ instead of jQuery)
 
@@ -12,7 +10,7 @@
     // functions.  for example:
 
     var today = new Date(); // used in defaults
-    var months = 'January February March April May June July August September October November December'.split(' ');
+    var months = 'Jan Feb March April May June July Aug Sept Oct Nov Dec'.split(' ');
     var monthlengths = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
     var dateRegEx = /^\d{1,2}\/\d{1,2}\/\d{2}|\d{4}$/;
     var yearRegEx = /^\d{4,4}$/;
@@ -166,10 +164,12 @@
             ,   y = jQuery("select[name=year]", datepicker).val()
             ,   d = new Date(y, m, 1)
             ,   startindex = d.getDay()
-            ,   numdays = monthlengths[m];
+            ,   numdays = monthlengths[m]
+            ;
 
             // http://en.wikipedia.org/wiki/Leap_year
-            if (1 == m && ((y % 4 == 0 && y % 100 != 0) || y % 400 == 0)) numdays = 29;
+            if (1 == m && ((y % 4 == 0 && y % 100 != 0) || y % 400 == 0))
+                numdays = 29;
 
             // test for end dates (instead of just a year range)
             if (opts.startdate.constructor == Date) {
@@ -182,15 +182,23 @@
             }
 
             // walk through the index and populate each cell, binding events too
-            for (var i = 0; i < numdays; i++) {
+            var cell, i;
 
-                var cell = jQuery(cells.get(i + startindex)).removeClass('chosen');
+            for (i = 0; i < numdays; i++) {
+                cell = jQuery(cells.get(i + startindex)).removeClass('chosen');
 
                 // test that the date falls within a range, if we have a range
-                if (
-                    (yr || ((!startDate && !startMonth) || ((i+1 >= startDate && mo == startMonth) || mo > startMonth))) &&
-                    (yr + 1 < yrs || ((!endDate && !endMonth) || ((i+1 <= endDate && mo == endMonth) || mo < endMonth)))) {
-
+                if (( yr || (
+                    ( !startDate && !startMonth ) || (
+                        ( i + 1 >= startDate
+                            && mo == startMonth ) || mo > startMonth
+                        ))
+                ) && ( yr + 1 < yrs || (
+                    ( !endDate && !endMonth )   || (
+                        ( i + 1 <= endDate
+                            && mo == endMonth ) || mo < endMonth
+                        ))
+                )){
                     cell.text(i + 1).addClass('date').hover(
                         function() {
                             jQuery(this).addClass('over');
@@ -224,10 +232,10 @@
 
         // iterate the matched nodeset
         return this.each(function() {
-
             // functions and vars declared here are created for each matched element. so if
             // your functions need to manage or access per-node state you can defined them
             // here and use $this to get at the DOM element
+
             if (jQuery(this).is('input') && 'text' == jQuery(this).attr('type')) {
 
                 var datepicker;
@@ -319,12 +327,12 @@
 
         // date string matching /^\d{1,2}\/\d{1,2}\/\d{2}|\d{4}$/
         // or four digit year
-        startdate: today.getFullYear(),
-        enddate: today.getFullYear() + 1,
+        startdate: today.getFullYear() - 2,
+        enddate: today.getFullYear() + 2,
 
         // offset from the top left corner of the input element
-        x : 18, // must be in px
-        y : 18 // must be in px
+        x : -1, // must be in px
+        y : 18  // must be in px
     };
 
 })(jQuery);

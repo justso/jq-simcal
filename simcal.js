@@ -14,6 +14,7 @@
     var monthlengths = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
     var dateRegEx = /^\d{1,2}\/\d{1,2}\/\d{2}|\d{4}$/;
     var yearRegEx = /^\d{4,4}$/;
+    var chosenEle, todayEle;  // keep tabs on these
 
     // next, declare the plugin function
     $.fn.simpleDatepicker = function(options) {
@@ -183,6 +184,8 @@
 
             // walk through the index and populate each cell, binding events too
             var cell, i;
+            if (todayEle)
+                todayEle.removeClass('today');    // for other months
 
             for (i = 0; i < numdays; i++) {
                 cell = jQuery(cells.get(i + startindex)).removeClass('chosen');
@@ -205,13 +208,27 @@
                         },
                         function() {
                             jQuery(this).removeClass('over');
-                        }).click(function() {
-                        var chosenDateObj = new Date(jQuery("select[name=year]", datepicker).val(), jQuery("select[name=month]", datepicker).val(), jQuery(this).text());
+                        })
+                    .click(function() {
+                        var chosenDateObj = new Date(
+                            jQuery("select[name=year]", datepicker).val(),
+                            jQuery("select[name=month]", datepicker).val(),
+                            jQuery(this).text());
+                        chosenEle.removeClass('chosen');    // move from
+                        jQuery(this).addClass('chosen');    // move to
                         closeIt(el, datepicker, chosenDateObj);
                     });
 
                     // highlight the previous chosen date
-                    if (i + 1 == chosendate.getDate() && m == chosendate.getMonth() && y == chosendate.getFullYear()) cell.addClass('chosen');
+                    if (i + 1 == chosendate.getDate()
+                        && m == chosendate.getMonth()
+                        && y == chosendate.getFullYear())
+                        chosenEle = cell.addClass('chosen');
+                    // highlight today as expected
+                    if (i + 1 == today.getDate()
+                        && m == today.getMonth()
+                        && y == today.getFullYear())
+                        todayEle = cell.addClass('today');
                 }
             }
         }
@@ -223,7 +240,10 @@
         function closeIt (el, datepicker, dateObj) {
             if (dateObj && dateObj.constructor == Date)
                 el.val(jQuery.fn.simpleDatepicker.formatOutput(dateObj));
-            datepicker.remove();
+
+            datepicker.fadeOut(333,function(){ // glimpse of chosen day
+                $(this).remove();
+            });
             datepicker = null;
             jQuery.data(el.get(0), "simpleDatepicker", {
                 hasDatepicker: false

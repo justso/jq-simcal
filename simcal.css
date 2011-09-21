@@ -47,9 +47,18 @@
     cursor: pointer;
 }
 .datepicker tbody td.date.over {
-    background-color: #99ffff;
+    background-color: #090; /* go */
+    color: #fff;
 }
 .datepicker tbody td.date.chosen {
+    background-color: #900; /* stop */
+    color: #fff;
     font-weight: bold;
-    background-color: #ccffcc;
+}
+.datepicker tbody td.date.today {
+    background-color: #fc0; /* watch */
+    color: #000;
+}
+.datepicker tbody td.date.chosen.today {
+    color: #900;
 }

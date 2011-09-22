@@ -72,6 +72,9 @@
 
         /** HTML factory for the actual datepicker table element **/
         // Read the year range to setup the correct years in our HTML <select>
+        /**
+         * @return {jQuery} instance with table html
+         */
         function newPickerHTML () {
             var years = []
             ,   $table
@@ -289,81 +292,84 @@
                 ('text' !== $(this).attr('type'))
                     ) return;
 
-            var $picker;
             $.data($(this).get(0), 'simcalPicker', {
                 hasPicker: false
             });
 
-            // open a datepicker on the click event
-            $(this).click(function (ev) {
-
-                var $this = $(ev.target)
-                ,   initialdate, chosendate
-                ;
-
-                if (false == $.data($this.get(0), 'simcalPicker').hasPicker) {
-
-                    // store data telling us there is already a datepicker
-                    $.data($this.get(0), 'simcalPicker', {
-                        hasPicker: true
-                    });
-
-                    // validate the form's initial content for a date
-                    initialdate = $this.val();
-
-                    if (initialdate && dateRegEx.test(initialdate))
-                        chosendate = new Date(initialdate);
-                    else if (opts.chosendate.constructor == Date)
-                        chosendate = opts.chosendate;
-                    else if (opts.chosendate)
-                        chosendate = new Date(opts.chosendate);
-                    else
-                        chosendate = today;
-
-                    // insert the datepicker in the DOM
-                    $picker = newPickerHTML();
-                    $('body').prepend($picker);
-
-                    // position the datepicker
-                    var elPos = findPosition($this.get(0))
-                    ,   x = (parseInt(opts.x) ? parseInt(opts.x) : 0) + elPos[0]
-                    ,   y = (parseInt(opts.y) ? parseInt(opts.y) : 0) + elPos[1]
-                    ;
-                    $picker.css({
-                        position: 'absolute',
-                        left: x,
-                        top: y
-                    });
-
-                    // bind events to the table controls
-                    $('span', $picker).css('cursor', 'pointer');
-                    $('select', $picker).bind('change', function () {
-                        loadMonth(null, $this, $picker, chosendate);
-                    });
-                    $('span.prevMonth', $picker).click(function (e) {
-                        loadMonth(e, $this, $picker, chosendate);
-                    });
-                    $('span.nextMonth', $picker).click(function (e) {
-                        loadMonth(e, $this, $picker, chosendate);
-                    });
-                    $('span.today', $picker).click(function () {
-                        closeIt($this, $picker, new Date());
-                    });
-                    $('span.close', $picker).click(function () {
-                        closeIt($this, $picker);
-                    });
-
-                    // set the initial values for the month and year select fields
-                    // and load the first month
-                    $('select[name=month]', $picker).get(0)
-                    .selectedIndex = chosendate.getMonth();
-                    $('select[name=year]', $picker).get(0)
-                    .selectedIndex = Math.max(0, chosendate.getFullYear() - opts.startyear);
-
-                    loadMonth(null, $this, $picker, chosendate);
-                }
-            });
+            // toggle a datepicker on these events
+            $(this).bind('keydown', function(){
+                $('span.close').trigger('click');
+            }).bind('mousedown focus', openPicker);
         });
+
+        function openPicker(evt) {
+            var $this = $(evt.target)
+            ,   initialdate, chosendate
+            ,   $picker
+            ;
+
+            if (false == $.data($this.get(0), 'simcalPicker').hasPicker) {
+
+                // store data telling us there is already a datepicker
+                $.data($this.get(0), 'simcalPicker', {
+                    hasPicker: true
+                });
+
+                // validate the form's initial content for a date
+                initialdate = $this.val();
+
+                if (initialdate && dateRegEx.test(initialdate))
+                    chosendate = new Date(initialdate);
+                else if (opts.chosendate.constructor == Date)
+                    chosendate = opts.chosendate;
+                else if (opts.chosendate)
+                    chosendate = new Date(opts.chosendate);
+                else
+                    chosendate = today;
+
+                // insert the datepicker in the DOM
+                $picker = newPickerHTML();
+                $('body').prepend($picker);
+
+                // position the datepicker
+                var elPos = findPosition($this.get(0))
+                ,   x = (parseInt(opts.x) ? parseInt(opts.x) : 0) + elPos[0]
+                ,   y = (parseInt(opts.y) ? parseInt(opts.y) : 0) + elPos[1]
+                ;
+                $picker.css({
+                    position: 'absolute',
+                    left: x,
+                    top: y
+                });
+
+                // bind events to the table controls
+                $('span', $picker).css('cursor', 'pointer');
+                $('select', $picker).bind('change', function () {
+                    loadMonth(null, $this, $picker, chosendate);
+                });
+                $('span.prevMonth', $picker).click(function (e) {
+                    loadMonth(e, $this, $picker, chosendate);
+                });
+                $('span.nextMonth', $picker).click(function (e) {
+                    loadMonth(e, $this, $picker, chosendate);
+                });
+                $('span.today', $picker).click(function () {
+                    closeIt($this, $picker, new Date());
+                });
+                $('span.close', $picker).click(function () {
+                    closeIt($this, $picker);
+                });
+
+                // set the initial values for the month and year select fields
+                // and load the first month
+                $('select[name=month]', $picker).get(0)
+                .selectedIndex = chosendate.getMonth();
+                $('select[name=year]', $picker).get(0)
+                .selectedIndex = Math.max(0, chosendate.getFullYear() - opts.startyear);
+
+                loadMonth(null, $this, $picker, chosendate);
+            }
+        }
     };
 
     // Finally, I like to expose default plugin options as public

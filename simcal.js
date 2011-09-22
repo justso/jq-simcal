@@ -1,9 +1,10 @@
-/**
-    the script only works on "input [type=text]"
-    don't declare anything out here in the global namespace
-**/
+/*
+ *  The script only works on "input [type=text]"
+ *  Don't declare anything out here in the global namespace
+ *
+ */
 
-(function ($) { // create private scope (inside you can use $ instead of jQuery)
+(function ($) { // private scope (inside you can use $ instead of jQuery)
 
     // Functions and vars declared here are effectively 'singletons'.
     // there will be only a single instance of them.
@@ -11,22 +12,20 @@
     // or stateless functions. For example:
 
     var today = new Date(); // used in defaults
-    var months = 'Jan Feb March April May June July Aug Sept Oct Nov Dec'.split(' ');
-    var monthLengths = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
-    var dateRegEx = /^\d{1,2}\/\d{1,2}\/\d{2}|\d{4}$/;
-    var yearRegEx = /^\d{4,4}$/;
+    var months = 'Jan Feb March April May June July Aug Sept Oct Nov Dec'.split(' ')
+    ,   mlengths = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+    var dateRegEx = /^\d{1,2}\/\d{1,2}\/\d{2}|\d{4}$/
+    ,   yearRegEx = /^\d{4,4}$/;
     var $chosen, $today;  // keep tabs on these
 
     // next, declare the plugin function
-    $.fn.simpleDatepicker = function (options) {
+    $.fn.simcalPicker = function (options) {
+        // Functions and vars declared here are created each time your
+        // plugin function is invoked.
+        // You could probably refactor your 'build', 'load_month', etc,
+        // functions to be passed the DOM element from below.
 
-        // functions and vars declared here are created each time your
-        // plugin function is invoked
-
-        // you could probably refactor your 'build', 'load_month', etc,
-        // functions to be passed the DOM element from below
-
-        var opts = $.extend({}, $.fn.simpleDatepicker.defaults, options);
+        var opts = $.extend({}, $.fn.simcalPicker.defaults, options);
 
         // replaces a date string with a date object in opts.startdate
         // and opts.enddate, if one exists populates two new properties
@@ -35,8 +34,9 @@
         setupYearRange();
         /** extracts and setup a valid year range from the opts object **/
         function setupYearRange() {
-
-            var startyear, endyear;
+            var startyear
+            ,   endyear
+            ;
             if (opts.startdate.constructor == Date) {
                 startyear = opts.startdate.getFullYear();
             } else if (opts.startdate) {
@@ -71,35 +71,51 @@
         }
 
         /** HTML factory for the actual datepicker table element **/
-        // has to read the year range so it can setup the correct years in our HTML <select>
-        function newDatepickerHTML () {
+        // Read the year range to setup the correct years in our HTML <select>
+        function newPickerHTML () {
             var years = []
+            ,   $table
+            ,   monthselect
+            ,   yearselect
             ,   i
             ;
             // process year range into an array
-            for (i = 0; i <= opts.endyear - opts.startyear; i++) years[i] = opts.startyear + i;
+            for (i = 0; i <= opts.endyear - opts.startyear; i++)
+                years[i] = opts.startyear + i;
 
             // build the table structure
-            var $table = $('<table class="datepicker" cellpadding="0" cellspacing="0"></table>');
+            $table = $('<table class="simcal"></table>');
             $table.append('<thead></thead>');
             $table.append('<tfoot></tfoot>');
             $table.append('<tbody></tbody>');
 
             // month select field
-            var monthselect = '<select name="month">';
-            for (i in months) monthselect += '<option value="' + i + '">' + months[i] + '</option>';
+            monthselect = '<select name="month">';
+            for (i in months)
+                monthselect += '<option value="' + i + '">' + months[i] + '</option>';
             monthselect += '</select>';
 
             // year select field
-            var yearselect = '<select name="year">';
-            for (i in years) yearselect += '<option>' + years[i] + '</option>';
+            yearselect = '<select name="year">';
+            for (i in years)
+                yearselect += '<option>' + years[i] + '</option>';
             yearselect += '</select>';
 
-            $('thead', $table).append('<tr class="controls"><th colspan="7"><span class="prevMonth">&laquo;</span>&nbsp;' + monthselect + yearselect + '&nbsp;<span class="nextMonth">&raquo;</span></th></tr>');
-            $('thead', $table).append('<tr class="days"><th>S</th><th>M</th><th>T</th><th>W</th><th>T</th><th>F</th><th>S</th></tr>');
-            $('tfoot', $table).append('<tr><td colspan="2"><span class="today">today</span></td><td colspan="3">&nbsp;</td><td colspan="2"><span class="close">close</span></td></tr>');
+            $('thead', $table).append(
+                '<tr class="controls"><th colspan="7">'
+                + '<span class="prevMonth">&laquo;</span>&nbsp;'
+                + monthselect + yearselect
+                + '&nbsp;<span class="nextMonth">&raquo;</span></th></tr>');
+            $('thead', $table).append(
+                '<tr class="days"><th>S</th><th>M</th><th>T</th>'
+                + '<th>W</th><th>T</th><th>F</th><th>S</th></tr>');
+            $('tfoot', $table).append(
+                '<tr><td colspan="2"><span class="today">today</span></td>'
+                + '<td colspan="3">&nbsp;</td><td colspan="2">'
+                + '<span class="close">close</span></td></tr>');
             for (i = 0; i < 6; i++)
-                $('tbody', $table).append('<tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>');
+                $('tbody', $table).append(
+                    '<tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>');
             return $table;
         }
 
@@ -112,7 +128,7 @@
             if (obj.offsetParent) {
                 do {
                     curleft += obj.offsetLeft;
-                    curtop += obj.offsetTop;
+                    curtop  += obj.offsetTop;
                 } while ((obj = obj.offsetParent)); // not a syntax error
                 return [curleft, curtop];
             } else {
@@ -124,12 +140,12 @@
         // initial calendar load (e is null)
         // prevMonth & nextMonth buttons
         // onchange for the select fields
-        function loadMonth(e, el, datepicker, chosendate) {
+        function loadMonth(e, el, picker, chosendate) {
 
             // reference our years for the nextMonth and prevMonth buttons
-            var mo  = $('select[name=month]', datepicker).get(0).selectedIndex
-            ,   yr  = $('select[name=year]', datepicker).get(0).selectedIndex
-            ,   yrs = $('select[name=year] option', datepicker).get().length
+            var mo  = $('select[name=month]', picker).get(0).selectedIndex
+            ,   yr  = $('select[name=year]', picker).get(0).selectedIndex
+            ,   yrs = $('select[name=year] option', picker).get().length
             ;
 
             // first try to process buttons that may change the month we're on
@@ -137,46 +153,48 @@
                 if (0 == mo && yr) {
                     yr -= 1;
                     mo = 11;
-                    $('select[name=month]', datepicker).get(0).selectedIndex = 11;
-                    $('select[name=year]', datepicker).get(0).selectedIndex = yr;
+                    $('select[name=month]', picker).get(0).selectedIndex = 11;
+                    $('select[name=year]', picker).get(0).selectedIndex = yr;
                 } else {
                     mo -= 1;
-                    $('select[name=month]', datepicker).get(0).selectedIndex = mo;
+                    $('select[name=month]', picker).get(0).selectedIndex = mo;
                 }
             } else if (e && $(e.target).hasClass('nextMonth')) {
                 if (11 == mo && yr + 1 < yrs) {
                     yr += 1;
-                    mo = 0;
-                    $('select[name=month]', datepicker).get(0).selectedIndex = 0;
-                    $('select[name=year]', datepicker).get(0).selectedIndex = yr;
+                    mo  = 0;
+                    $('select[name=month]', picker).get(0).selectedIndex = 0;
+                    $('select[name=year]', picker).get(0).selectedIndex = yr;
                 } else {
                     mo += 1;
-                    $('select[name=month]', datepicker).get(0).selectedIndex = mo;
+                    $('select[name=month]', picker).get(0).selectedIndex = mo;
                 }
             }
 
             // maybe hide buttons
             if (0 == mo && !yr)
-                $('span.prevMonth', datepicker).hide();
+                $('span.prevMonth', picker).hide();
             else
-                $('span.prevMonth', datepicker).show();
+                $('span.prevMonth', picker).show();
 
             if (yr + 1 == yrs && 11 == mo)
-                $('span.nextMonth', datepicker).hide();
+                $('span.nextMonth', picker).hide();
             else
-                $('span.nextMonth', datepicker).show();
+                $('span.nextMonth', picker).show();
 
+            var $cells
+            ,   m, y, d, startindex
+            ,   numdays, starts, ends
+            ;
             // clear the old cells
-            var $cells = $('tbody td', datepicker)
-            .unbind().empty().removeClass('date');
+            $cells = $('tbody td', picker).unbind().empty().removeClass('date');
 
             // figure out what month and year to load
-            var m = $('select[name=month]', datepicker).val()
-            ,   y = $('select[name=year]', datepicker).val()
-            ,   d = new Date(y, m, 1)
-            ,   startindex = d.getDay()
-            ,   numdays = monthLengths[m]
-            ;
+            m = $('select[name=month]', picker).val();
+            y = $('select[name=year]', picker).val();
+            d = new Date(y, m, 1);
+            startindex = d.getDay();
+            numdays = mlengths[m];
 
             // http://en.wikipedia.org/wiki/Leap_year
             if (1 == m && ((y % 4 == 0 && y % 100 != 0) || y % 400 == 0))
@@ -184,12 +202,10 @@
 
             // test for end dates (instead of just a year range)
             if (opts.startdate.constructor == Date) {
-                var startMonth = opts.startdate.getMonth();
-                var startDate = opts.startdate.getDate();
+                starts = [opts.startdate.getMonth(), opts.startdate.getDate()];
             }
             if (opts.enddate.constructor == Date) {
-                var endMonth = opts.enddate.getMonth();
-                var endDate = opts.enddate.getDate();
+                ends = [opts.enddate.getMonth(), opts.enddate.getDate()];
             }
 
             // walk through the index and populate each cell, binding events too
@@ -202,14 +218,14 @@
 
                 // test that the date falls within a range, if we have a range
                 if (( yr || (
-                    ( !startDate && !startMonth ) || (
-                        ( i + 1 >= startDate
-                            && mo == startMonth ) || mo > startMonth
+                    ( !starts[1] && !starts[0] ) || (
+                        ( i + 1 >= starts[1]
+                            && mo == starts[0] ) || mo > starts[0]
                         ))
                 ) && ( yr + 1 < yrs || (
-                    ( !endDate && !endMonth )   || (
-                        ( i + 1 <= endDate
-                            && mo == endMonth ) || mo < endMonth
+                    ( !ends[1] && !ends[0] )   || (
+                        ( i + 1 <= ends[1]
+                            && mo == ends[0] ) || mo < ends[0]
                         ))
                 )){
                     $cell.text(i + 1).addClass('date').hover(
@@ -221,12 +237,12 @@
                         })
                     .click(function () {
                         var chosenDateObj = new Date(
-                            $('select[name=year]', datepicker).val(),
-                            $('select[name=month]', datepicker).val(),
+                            $('select[name=year]', picker).val(),
+                            $('select[name=month]', picker).val(),
                             $(this).text());
                         $chosen.removeClass('chosen');  // move from
                         $(this).addClass('chosen');     // to here
-                        closeIt(el, datepicker, chosenDateObj);
+                        closeIt(el, picker, chosenDateObj);
                     });
 
                     // highlight the previous chosen date
@@ -249,16 +265,16 @@
         // indicate that there is no datepicker for the currently
         // matched input element
 
-        function closeIt (el, datepicker, dateObj) {
+        function closeIt (el, $picker, dateObj) {
             if (dateObj && dateObj.constructor == Date)
-                el.val($.fn.simpleDatepicker.formatOutput(dateObj));
+                el.val($.fn.simcalPicker.formatOutput(dateObj));
 
-            datepicker.fadeOut(333,function (){ // glimpse the chosen day
+            $picker.fadeOut(333,function (){ // glimpse the chosen day
                 $(this).remove();
             });
-            datepicker = null;
-            $.data(el.get(0), 'simpleDatepicker', {
-                hasDatepicker: false
+            $picker = null;
+            $.data(el.get(0), 'simcalPicker', {
+                hasPicker: false
             });
         }
 
@@ -273,27 +289,27 @@
                 ('text' !== $(this).attr('type'))
                     ) return;
 
-            var datepicker;
-            $.data($(this).get(0), 'simpleDatepicker', {
-                hasDatepicker: false
+            var $picker;
+            $.data($(this).get(0), 'simcalPicker', {
+                hasPicker: false
             });
 
             // open a datepicker on the click event
             $(this).click(function (ev) {
 
                 var $this = $(ev.target)
-                ,   chosendate
+                ,   initialdate, chosendate
                 ;
 
-                if (false == $.data($this.get(0), 'simpleDatepicker').hasDatepicker) {
+                if (false == $.data($this.get(0), 'simcalPicker').hasPicker) {
 
                     // store data telling us there is already a datepicker
-                    $.data($this.get(0), 'simpleDatepicker', {
-                        hasDatepicker: true
+                    $.data($this.get(0), 'simcalPicker', {
+                        hasPicker: true
                     });
 
                     // validate the form's initial content for a date
-                    var initialdate = $this.val();
+                    initialdate = $this.val();
 
                     if (initialdate && dateRegEx.test(initialdate))
                         chosendate = new Date(initialdate);
@@ -304,45 +320,47 @@
                     else
                         chosendate = today;
 
-
                     // insert the datepicker in the DOM
-                    datepicker = newDatepickerHTML();
-                    $('body').prepend(datepicker);
+                    $picker = newPickerHTML();
+                    $('body').prepend($picker);
 
                     // position the datepicker
                     var elPos = findPosition($this.get(0))
                     ,   x = (parseInt(opts.x) ? parseInt(opts.x) : 0) + elPos[0]
                     ,   y = (parseInt(opts.y) ? parseInt(opts.y) : 0) + elPos[1]
                     ;
-                    $(datepicker).css({
+                    $picker.css({
                         position: 'absolute',
                         left: x,
                         top: y
                     });
 
                     // bind events to the table controls
-                    $('span', datepicker).css('cursor', 'pointer');
-                    $('select', datepicker).bind('change', function () {
-                        loadMonth(null, $this, datepicker, chosendate);
+                    $('span', $picker).css('cursor', 'pointer');
+                    $('select', $picker).bind('change', function () {
+                        loadMonth(null, $this, $picker, chosendate);
                     });
-                    $('span.prevMonth', datepicker).click(function (e) {
-                        loadMonth(e, $this, datepicker, chosendate);
+                    $('span.prevMonth', $picker).click(function (e) {
+                        loadMonth(e, $this, $picker, chosendate);
                     });
-                    $('span.nextMonth', datepicker).click(function (e) {
-                        loadMonth(e, $this, datepicker, chosendate);
+                    $('span.nextMonth', $picker).click(function (e) {
+                        loadMonth(e, $this, $picker, chosendate);
                     });
-                    $('span.today', datepicker).click(function () {
-                        closeIt($this, datepicker, new Date());
+                    $('span.today', $picker).click(function () {
+                        closeIt($this, $picker, new Date());
                     });
-                    $('span.close', datepicker).click(function () {
-                        closeIt($this, datepicker);
+                    $('span.close', $picker).click(function () {
+                        closeIt($this, $picker);
                     });
 
                     // set the initial values for the month and year select fields
                     // and load the first month
-                    $('select[name=month]', datepicker).get(0).selectedIndex = chosendate.getMonth();
-                    $('select[name=year]', datepicker).get(0).selectedIndex = Math.max(0, chosendate.getFullYear() - opts.startyear);
-                    loadMonth(null, $this, datepicker, chosendate);
+                    $('select[name=month]', $picker).get(0)
+                    .selectedIndex = chosendate.getMonth();
+                    $('select[name=year]', $picker).get(0)
+                    .selectedIndex = Math.max(0, chosendate.getFullYear() - opts.startyear);
+
+                    loadMonth(null, $this, $picker, chosendate);
                 }
             });
         });
@@ -352,11 +370,15 @@
     // so they can be manipulated. One way to do this is to add a property
     // to the already-public plugin fn
 
-    $.fn.simpleDatepicker.formatOutput = function (dateObj) {
-        return (dateObj.getMonth() + 1) + '/' + dateObj.getDate() + '/' + dateObj.getFullYear();
+    $.fn.simcalPicker.formatOutput = function (dateObj) {
+        return [
+        dateObj.getMonth() + 1,
+        dateObj.getDate(),
+        dateObj.getFullYear()
+        ].join('/');
     };
 
-    $.fn.simpleDatepicker.defaults = {
+    $.fn.simcalPicker.defaults = {
         // date string matching /^\d{1,2}\/\d{1,2}\/\d{2}|\d{4}$/
         chosendate: today,
 

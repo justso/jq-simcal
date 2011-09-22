@@ -1,6 +1,6 @@
 @charset "utf-8";
 
-.datepicker {
+.simcal {
     background: #eee;
     border-collapse: collapse;
     border: 2px solid #999;
@@ -9,56 +9,56 @@
     width: auto;
     z-index: 9999;
 }
-.datepicker * {
+.simcal * {
     color: #000;
     font: 1em/1.5em sans-serif;
     text-align: center;
     white-space: nowrap;
 }
-.datepicker thead th {
+.simcal thead th {
     height: 3em;
 }
-.datepicker tfoot td {
+.simcal tfoot td {
     height: 2.5em;
     text-transform: capitalize;
 }
-.datepicker th span {
+.simcal th span {
     font-size: 1.3em; /* header only */
 }
-.datepicker th span,
-.datepicker tfoot td span {
+.simcal th span,
+.simcal tfoot td span {
     border: 1px solid #eee;
     margin: .25em;
     padding: .2em .5em;
 }
-.datepicker span:hover {
+.simcal span:hover {
     background: #fff;
     border: 1px outset #ccc;
     color: #c00;
 }
-.datepicker tbody td {
+.simcal tbody td {
     background: #fff;
     border: 1px solid #ccc;
     height: 2.5em;
     text-align: center;
     width: 2.5em;
 }
-.datepicker tbody td.date {
+.simcal tbody td.date {
     cursor: pointer;
 }
-.datepicker tbody td.date.over {
+.simcal tbody td.date.over {
     background-color: #090; /* go */
     color: #fff;
 }
-.datepicker tbody td.date.chosen {
+.simcal tbody td.date.chosen {
     background-color: #900; /* stop */
     color: #fff;
     font-weight: bold;
 }
-.datepicker tbody td.date.today {
+.simcal tbody td.date.today {
     background-color: #fc0; /* watch */
     color: #000;
 }
-.datepicker tbody td.date.chosen.today {
+.simcal tbody td.date.chosen.today {
     color: #900;
 }

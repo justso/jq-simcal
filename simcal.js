@@ -77,7 +77,7 @@
          */
         function newPickerHTML () {
             var years = []
-            ,   $table
+            ,   $picker
             ,   monthselect
             ,   yearselect
             ,   i
@@ -87,15 +87,16 @@
                 years[i] = opts.startyear + i;
 
             // build the table structure
-            $table = $('<table class="simcal"></table>');
-            $table.append('<thead></thead>');
-            $table.append('<tfoot></tfoot>');
-            $table.append('<tbody></tbody>');
+            $picker = $('<table class="simcal"></table>');
+            $picker.append('<thead></thead>');
+            $picker.append('<tfoot></tfoot>');
+            $picker.append('<tbody></tbody>');
 
             // month select field
             monthselect = '<select name="month">';
             for (i in months)
-                monthselect += '<option value="' + i + '">' + months[i] + '</option>';
+                monthselect += '<option value="' + i + '">'
+                + months[i] + '</option>';
             monthselect += '</select>';
 
             // year select field
@@ -104,22 +105,23 @@
                 yearselect += '<option>' + years[i] + '</option>';
             yearselect += '</select>';
 
-            $('thead', $table).append(
+            $('thead', $picker).append(
                 '<tr class="controls"><th colspan="7">'
                 + '<span class="prevMonth">&laquo;</span>&nbsp;'
                 + monthselect + yearselect
                 + '&nbsp;<span class="nextMonth">&raquo;</span></th></tr>');
-            $('thead', $table).append(
+            $('thead', $picker).append(
                 '<tr class="days"><th>S</th><th>M</th><th>T</th>'
                 + '<th>W</th><th>T</th><th>F</th><th>S</th></tr>');
-            $('tfoot', $table).append(
+            $('tfoot', $picker).append(
                 '<tr><td colspan="2"><span class="today">today</span></td>'
                 + '<td colspan="3">&nbsp;</td><td colspan="2">'
                 + '<span class="close">close</span></td></tr>');
             for (i = 0; i < 6; i++)
-                $('tbody', $table).append(
-                    '<tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>');
-            return $table;
+                $('tbody', $picker).append(
+                    '<tr><td></td><td></td><td></td><td></td>'
+                    + '<td></td><td></td><td></td></tr>');
+            return $picker;
         }
 
         /** get the real position of the input (well, anything really) **/
@@ -143,12 +145,12 @@
         // initial calendar load (e is null)
         // prevMonth & nextMonth buttons
         // onchange for the select fields
-        function loadMonth(e, el, picker, chosendate) {
+        function loadMonth(e, el, $picker, chosendate) {
 
             // reference our years for the nextMonth and prevMonth buttons
-            var mo  = $('select[name=month]', picker).get(0).selectedIndex
-            ,   yr  = $('select[name=year]', picker).get(0).selectedIndex
-            ,   yrs = $('select[name=year] option', picker).get().length
+            var mo  = $('select[name=month]', $picker).get(0).selectedIndex
+            ,   yr  = $('select[name=year]', $picker).get(0).selectedIndex
+            ,   yrs = $('select[name=year] option', $picker).get().length
             ;
 
             // first try to process buttons that may change the month we're on
@@ -156,45 +158,45 @@
                 if (0 == mo && yr) {
                     yr -= 1;
                     mo = 11;
-                    $('select[name=month]', picker).get(0).selectedIndex = 11;
-                    $('select[name=year]', picker).get(0).selectedIndex = yr;
+                    $('select[name=month]', $picker).get(0).selectedIndex = 11;
+                    $('select[name=year]', $picker).get(0).selectedIndex = yr;
                 } else {
                     mo -= 1;
-                    $('select[name=month]', picker).get(0).selectedIndex = mo;
+                    $('select[name=month]', $picker).get(0).selectedIndex = mo;
                 }
             } else if (e && $(e.target).hasClass('nextMonth')) {
                 if (11 == mo && yr + 1 < yrs) {
                     yr += 1;
                     mo  = 0;
-                    $('select[name=month]', picker).get(0).selectedIndex = 0;
-                    $('select[name=year]', picker).get(0).selectedIndex = yr;
+                    $('select[name=month]', $picker).get(0).selectedIndex = 0;
+                    $('select[name=year]', $picker).get(0).selectedIndex = yr;
                 } else {
                     mo += 1;
-                    $('select[name=month]', picker).get(0).selectedIndex = mo;
+                    $('select[name=month]', $picker).get(0).selectedIndex = mo;
                 }
             }
 
             // maybe hide buttons
             if (0 == mo && !yr)
-                $('span.prevMonth', picker).hide();
+                $('span.prevMonth', $picker).hide();
             else
-                $('span.prevMonth', picker).show();
+                $('span.prevMonth', $picker).show();
 
             if (yr + 1 == yrs && 11 == mo)
-                $('span.nextMonth', picker).hide();
+                $('span.nextMonth', $picker).hide();
             else
-                $('span.nextMonth', picker).show();
+                $('span.nextMonth', $picker).show();
 
             var $cells
             ,   m, y, d, startindex
             ,   numdays, starts, ends
             ;
             // clear the old cells
-            $cells = $('tbody td', picker).unbind().empty().removeClass('date');
+            $cells = $('tbody td', $picker).unbind().empty().removeClass('date');
 
             // figure out what month and year to load
-            m = $('select[name=month]', picker).val();
-            y = $('select[name=year]', picker).val();
+            m = $('select[name=month]', $picker).val();
+            y = $('select[name=year]', $picker).val();
             d = new Date(y, m, 1);
             startindex = d.getDay();
             numdays = mlengths[m];
@@ -240,12 +242,12 @@
                         })
                     .click(function () {
                         var chosenDateObj = new Date(
-                            $('select[name=year]', picker).val(),
-                            $('select[name=month]', picker).val(),
+                            $('select[name=year]', $picker).val(),
+                            $('select[name=month]', $picker).val(),
                             $(this).text());
                         $chosen.removeClass('chosen');  // move from
                         $(this).addClass('chosen');     // to here
-                        closeIt(el, picker, chosenDateObj);
+                        closeIt(el, $picker, chosenDateObj);
                     });
 
                     // highlight the previous chosen date

@@ -176,20 +176,23 @@
                 }
             }
 
-            // maybe hide buttons
+            // hide buttons, but keep placeholder metrics
+            // 2do: get rid of this, and allow 'unlimited' back and forth
             if (0 == mo && !yr)
-                $('span.prevMonth', $picker).hide();
+                $('span.prevMonth', $picker).css('visibility','hidden');
             else
-                $('span.prevMonth', $picker).show();
+                $('span.prevMonth', $picker).css('visibility','visible');
 
             if (yr + 1 == yrs && 11 == mo)
-                $('span.nextMonth', $picker).hide();
+                $('span.nextMonth', $picker).css('visibility','hidden');
             else
-                $('span.nextMonth', $picker).show();
+                $('span.nextMonth', $picker).css('visibility','visible');
 
             var $cells
-            ,   m, y, d, startindex
-            ,   numdays, starts, ends
+            ,   m, y, d
+            ,   startindex, numdays
+            ,   startMonth, endMonth
+            ,   startDate, endDate
             ;
             // clear the old cells
             $cells = $('tbody td', $picker).unbind().empty().removeClass('date');
@@ -207,10 +210,12 @@
 
             // test for end dates (instead of just a year range)
             if (opts.startdate.constructor == Date) {
-                starts = [opts.startdate.getMonth(), opts.startdate.getDate()];
+                startMonth = opts.startdate.getMonth();
+                startDate = opts.startdate.getDate();
             }
             if (opts.enddate.constructor == Date) {
-                ends = [opts.enddate.getMonth(), opts.enddate.getDate()];
+                endMonth = opts.enddate.getMonth();
+                endDate = opts.enddate.getDate();
             }
 
             // walk through the index and populate each cell, binding events too
@@ -223,14 +228,14 @@
 
                 // test that the date falls within a range, if we have a range
                 if (( yr || (
-                    ( !starts[1] && !starts[0] ) || (
-                        ( i + 1 >= starts[1]
-                            && mo == starts[0] ) || mo > starts[0]
+                    ( !startDate && !startMonth ) || (
+                        ( i + 1 >= startDate
+                            && mo == startMonth ) || mo > startMonth
                         ))
                 ) && ( yr + 1 < yrs || (
-                    ( !ends[1] && !ends[0] )   || (
-                        ( i + 1 <= ends[1]
-                            && mo == ends[0] ) || mo < ends[0]
+                    ( !endDate && !endMonth )   || (
+                        ( i + 1 <= endDate
+                            && mo == endMonth ) || mo < endMonth
                         ))
                 )){
                     $cell.text(i + 1).addClass('date').hover(
@@ -392,8 +397,8 @@
 
         // date string matching /^\d{1,2}\/\d{1,2}\/\d{2}|\d{4}$/
         // or four digit year
-        startdate: today.getFullYear() - 2,
-        enddate: today.getFullYear() + 2,
+        startdate: today.getFullYear() - 11,
+        enddate: today.getFullYear() + 11,
 
         // offset from the top left corner of the input element
         x : -1, // must be in px

@@ -95,11 +95,11 @@
             for (i in years) yearselect += '<option>' + years[i] + '</option>';
             yearselect += '</select>';
 
-            $("thead", $table).append('<tr class="controls"><th colspan="7"><span class="prevMonth">&laquo;</span>&nbsp;' + monthselect + yearselect + '&nbsp;<span class="nextMonth">&raquo;</span></th></tr>');
-            $("thead", $table).append('<tr class="days"><th>S</th><th>M</th><th>T</th><th>W</th><th>T</th><th>F</th><th>S</th></tr>');
-            $("tfoot", $table).append('<tr><td colspan="2"><span class="today">today</span></td><td colspan="3">&nbsp;</td><td colspan="2"><span class="close">close</span></td></tr>');
+            $('thead', $table).append('<tr class="controls"><th colspan="7"><span class="prevMonth">&laquo;</span>&nbsp;' + monthselect + yearselect + '&nbsp;<span class="nextMonth">&raquo;</span></th></tr>');
+            $('thead', $table).append('<tr class="days"><th>S</th><th>M</th><th>T</th><th>W</th><th>T</th><th>F</th><th>S</th></tr>');
+            $('tfoot', $table).append('<tr><td colspan="2"><span class="today">today</span></td><td colspan="3">&nbsp;</td><td colspan="2"><span class="close">close</span></td></tr>');
             for (i = 0; i < 6; i++)
-                $("tbody", $table).append('<tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>');
+                $('tbody', $table).append('<tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>');
             return $table;
         }
 
@@ -127,9 +127,9 @@
         function loadMonth(e, el, datepicker, chosendate) {
 
             // reference our years for the nextMonth and prevMonth buttons
-            var mo  = $("select[name=month]", datepicker).get(0).selectedIndex
-            ,   yr  = $("select[name=year]", datepicker).get(0).selectedIndex
-            ,   yrs = $("select[name=year] option", datepicker).get().length
+            var mo  = $('select[name=month]', datepicker).get(0).selectedIndex
+            ,   yr  = $('select[name=year]', datepicker).get(0).selectedIndex
+            ,   yrs = $('select[name=year] option', datepicker).get().length
             ;
 
             // first try to process buttons that may change the month we're on
@@ -137,42 +137,42 @@
                 if (0 == mo && yr) {
                     yr -= 1;
                     mo = 11;
-                    $("select[name=month]", datepicker).get(0).selectedIndex = 11;
-                    $("select[name=year]", datepicker).get(0).selectedIndex = yr;
+                    $('select[name=month]', datepicker).get(0).selectedIndex = 11;
+                    $('select[name=year]', datepicker).get(0).selectedIndex = yr;
                 } else {
                     mo -= 1;
-                    $("select[name=month]", datepicker).get(0).selectedIndex = mo;
+                    $('select[name=month]', datepicker).get(0).selectedIndex = mo;
                 }
             } else if (e && $(e.target).hasClass('nextMonth')) {
                 if (11 == mo && yr + 1 < yrs) {
                     yr += 1;
                     mo = 0;
-                    $("select[name=month]", datepicker).get(0).selectedIndex = 0;
-                    $("select[name=year]", datepicker).get(0).selectedIndex = yr;
+                    $('select[name=month]', datepicker).get(0).selectedIndex = 0;
+                    $('select[name=year]', datepicker).get(0).selectedIndex = yr;
                 } else {
                     mo += 1;
-                    $("select[name=month]", datepicker).get(0).selectedIndex = mo;
+                    $('select[name=month]', datepicker).get(0).selectedIndex = mo;
                 }
             }
 
             // maybe hide buttons
             if (0 == mo && !yr)
-                $("span.prevMonth", datepicker).hide();
+                $('span.prevMonth', datepicker).hide();
             else
-                $("span.prevMonth", datepicker).show();
+                $('span.prevMonth', datepicker).show();
 
             if (yr + 1 == yrs && 11 == mo)
-                $("span.nextMonth", datepicker).hide();
+                $('span.nextMonth', datepicker).hide();
             else
-                $("span.nextMonth", datepicker).show();
+                $('span.nextMonth', datepicker).show();
 
             // clear the old cells
-            var $cells = $("tbody td", datepicker)
+            var $cells = $('tbody td', datepicker)
             .unbind().empty().removeClass('date');
 
             // figure out what month and year to load
-            var m = $("select[name=month]", datepicker).val()
-            ,   y = $("select[name=year]", datepicker).val()
+            var m = $('select[name=month]', datepicker).val()
+            ,   y = $('select[name=year]', datepicker).val()
             ,   d = new Date(y, m, 1)
             ,   startindex = d.getDay()
             ,   numdays = monthLengths[m]
@@ -221,8 +221,8 @@
                         })
                     .click(function () {
                         var chosenDateObj = new Date(
-                            $("select[name=year]", datepicker).val(),
-                            $("select[name=month]", datepicker).val(),
+                            $('select[name=year]', datepicker).val(),
+                            $('select[name=month]', datepicker).val(),
                             $(this).text());
                         $chosen.removeClass('chosen');  // move from
                         $(this).addClass('chosen');     // to here
@@ -257,7 +257,7 @@
                 $(this).remove();
             });
             datepicker = null;
-            $.data(el.get(0), "simpleDatepicker", {
+            $.data(el.get(0), 'simpleDatepicker', {
                 hasDatepicker: false
             });
         }
@@ -274,7 +274,7 @@
                     ) return;
 
             var datepicker;
-            $.data($(this).get(0), "simpleDatepicker", {
+            $.data($(this).get(0), 'simpleDatepicker', {
                 hasDatepicker: false
             });
 
@@ -285,10 +285,10 @@
                 ,   chosendate
                 ;
 
-                if (false == $.data($this.get(0), "simpleDatepicker").hasDatepicker) {
+                if (false == $.data($this.get(0), 'simpleDatepicker').hasDatepicker) {
 
                     // store data telling us there is already a datepicker
-                    $.data($this.get(0), "simpleDatepicker", {
+                    $.data($this.get(0), 'simpleDatepicker', {
                         hasDatepicker: true
                     });
 
@@ -307,7 +307,7 @@
 
                     // insert the datepicker in the DOM
                     datepicker = newDatepickerHTML();
-                    $("body").prepend(datepicker);
+                    $('body').prepend(datepicker);
 
                     // position the datepicker
                     var elPos = findPosition($this.get(0))
@@ -321,27 +321,27 @@
                     });
 
                     // bind events to the table controls
-                    $("span", datepicker).css("cursor", "pointer");
-                    $("select", datepicker).bind('change', function () {
+                    $('span', datepicker).css('cursor', 'pointer');
+                    $('select', datepicker).bind('change', function () {
                         loadMonth(null, $this, datepicker, chosendate);
                     });
-                    $("span.prevMonth", datepicker).click(function (e) {
+                    $('span.prevMonth', datepicker).click(function (e) {
                         loadMonth(e, $this, datepicker, chosendate);
                     });
-                    $("span.nextMonth", datepicker).click(function (e) {
+                    $('span.nextMonth', datepicker).click(function (e) {
                         loadMonth(e, $this, datepicker, chosendate);
                     });
-                    $("span.today", datepicker).click(function () {
+                    $('span.today', datepicker).click(function () {
                         closeIt($this, datepicker, new Date());
                     });
-                    $("span.close", datepicker).click(function () {
+                    $('span.close', datepicker).click(function () {
                         closeIt($this, datepicker);
                     });
 
                     // set the initial values for the month and year select fields
                     // and load the first month
-                    $("select[name=month]", datepicker).get(0).selectedIndex = chosendate.getMonth();
-                    $("select[name=year]", datepicker).get(0).selectedIndex = Math.max(0, chosendate.getFullYear() - opts.startyear);
+                    $('select[name=month]', datepicker).get(0).selectedIndex = chosendate.getMonth();
+                    $('select[name=year]', datepicker).get(0).selectedIndex = Math.max(0, chosendate.getFullYear() - opts.startyear);
                     loadMonth(null, $this, datepicker, chosendate);
                 }
             });
@@ -353,7 +353,7 @@
     // to the already-public plugin fn
 
     $.fn.simpleDatepicker.formatOutput = function (dateObj) {
-        return (dateObj.getMonth() + 1) + "/" + dateObj.getDate() + "/" + dateObj.getFullYear();
+        return (dateObj.getMonth() + 1) + '/' + dateObj.getDate() + '/' + dateObj.getFullYear();
     };
 
     $.fn.simpleDatepicker.defaults = {

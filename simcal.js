@@ -77,7 +77,7 @@
          */
         function newPickerHTML () {
             var years = []
-            ,   $table
+            ,   $picker
             ,   monthselect
             ,   yearselect
             ,   i
@@ -87,15 +87,16 @@
                 years[i] = opts.startyear + i;
 
             // build the table structure
-            $table = $('<table class="simcal"></table>');
-            $table.append('<thead></thead>');
-            $table.append('<tfoot></tfoot>');
-            $table.append('<tbody></tbody>');
+            $picker = $('<table class="simcal"></table>');
+            $picker.append('<thead></thead>');
+            $picker.append('<tfoot></tfoot>');
+            $picker.append('<tbody></tbody>');
 
             // month select field
             monthselect = '<select name="month">';
             for (i in months)
-                monthselect += '<option value="' + i + '">' + months[i] + '</option>';
+                monthselect += '<option value="' + i + '">'
+                + months[i] + '</option>';
             monthselect += '</select>';
 
             // year select field
@@ -104,22 +105,23 @@
                 yearselect += '<option>' + years[i] + '</option>';
             yearselect += '</select>';
 
-            $('thead', $table).append(
+            $('thead', $picker).append(
                 '<tr class="controls"><th colspan="7">'
                 + '<span class="prevMonth">&laquo;</span>&nbsp;'
                 + monthselect + yearselect
                 + '&nbsp;<span class="nextMonth">&raquo;</span></th></tr>');
-            $('thead', $table).append(
+            $('thead', $picker).append(
                 '<tr class="days"><th>S</th><th>M</th><th>T</th>'
                 + '<th>W</th><th>T</th><th>F</th><th>S</th></tr>');
-            $('tfoot', $table).append(
+            $('tfoot', $picker).append(
                 '<tr><td colspan="2"><span class="today">today</span></td>'
                 + '<td colspan="3">&nbsp;</td><td colspan="2">'
                 + '<span class="close">close</span></td></tr>');
             for (i = 0; i < 6; i++)
-                $('tbody', $table).append(
-                    '<tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>');
-            return $table;
+                $('tbody', $picker).append(
+                    '<tr><td></td><td></td><td></td><td></td>'
+                    + '<td></td><td></td><td></td></tr>');
+            return $picker.unselectable();
         }
 
         /** get the real position of the input (well, anything really) **/
@@ -143,12 +145,12 @@
         // initial calendar load (e is null)
         // prevMonth & nextMonth buttons
         // onchange for the select fields
-        function loadMonth(e, el, picker, chosendate) {
+        function loadMonth(e, el, $picker, chosendate) {
 
             // reference our years for the nextMonth and prevMonth buttons
-            var mo  = $('select[name=month]', picker).get(0).selectedIndex
-            ,   yr  = $('select[name=year]', picker).get(0).selectedIndex
-            ,   yrs = $('select[name=year] option', picker).get().length
+            var mo  = $('select[name=month]', $picker).get(0).selectedIndex
+            ,   yr  = $('select[name=year]', $picker).get(0).selectedIndex
+            ,   yrs = $('select[name=year] option', $picker).get().length
             ;
 
             // first try to process buttons that may change the month we're on
@@ -156,45 +158,48 @@
                 if (0 == mo && yr) {
                     yr -= 1;
                     mo = 11;
-                    $('select[name=month]', picker).get(0).selectedIndex = 11;
-                    $('select[name=year]', picker).get(0).selectedIndex = yr;
+                    $('select[name=month]', $picker).get(0).selectedIndex = 11;
+                    $('select[name=year]', $picker).get(0).selectedIndex = yr;
                 } else {
                     mo -= 1;
-                    $('select[name=month]', picker).get(0).selectedIndex = mo;
+                    $('select[name=month]', $picker).get(0).selectedIndex = mo;
                 }
             } else if (e && $(e.target).hasClass('nextMonth')) {
                 if (11 == mo && yr + 1 < yrs) {
                     yr += 1;
                     mo  = 0;
-                    $('select[name=month]', picker).get(0).selectedIndex = 0;
-                    $('select[name=year]', picker).get(0).selectedIndex = yr;
+                    $('select[name=month]', $picker).get(0).selectedIndex = 0;
+                    $('select[name=year]', $picker).get(0).selectedIndex = yr;
                 } else {
                     mo += 1;
-                    $('select[name=month]', picker).get(0).selectedIndex = mo;
+                    $('select[name=month]', $picker).get(0).selectedIndex = mo;
                 }
             }
 
-            // maybe hide buttons
+            // hide buttons, but keep placeholder metrics
+            // 2do: get rid of this, and allow 'unlimited' back and forth
             if (0 == mo && !yr)
-                $('span.prevMonth', picker).hide();
+                $('span.prevMonth', $picker).css('visibility','hidden');
             else
-                $('span.prevMonth', picker).show();
+                $('span.prevMonth', $picker).css('visibility','visible');
 
             if (yr + 1 == yrs && 11 == mo)
-                $('span.nextMonth', picker).hide();
+                $('span.nextMonth', $picker).css('visibility','hidden');
             else
-                $('span.nextMonth', picker).show();
+                $('span.nextMonth', $picker).css('visibility','visible');
 
             var $cells
-            ,   m, y, d, startindex
-            ,   numdays, starts, ends
+            ,   m, y, d
+            ,   startindex, numdays
+            ,   startMonth, endMonth
+            ,   startDate, endDate
             ;
             // clear the old cells
-            $cells = $('tbody td', picker).unbind().empty().removeClass('date');
+            $cells = $('tbody td', $picker).unbind().empty().removeClass('date');
 
             // figure out what month and year to load
-            m = $('select[name=month]', picker).val();
-            y = $('select[name=year]', picker).val();
+            m = $('select[name=month]', $picker).val();
+            y = $('select[name=year]', $picker).val();
             d = new Date(y, m, 1);
             startindex = d.getDay();
             numdays = mlengths[m];
@@ -205,10 +210,12 @@
 
             // test for end dates (instead of just a year range)
             if (opts.startdate.constructor == Date) {
-                starts = [opts.startdate.getMonth(), opts.startdate.getDate()];
+                startMonth = opts.startdate.getMonth();
+                startDate = opts.startdate.getDate();
             }
             if (opts.enddate.constructor == Date) {
-                ends = [opts.enddate.getMonth(), opts.enddate.getDate()];
+                endMonth = opts.enddate.getMonth();
+                endDate = opts.enddate.getDate();
             }
 
             // walk through the index and populate each cell, binding events too
@@ -221,14 +228,14 @@
 
                 // test that the date falls within a range, if we have a range
                 if (( yr || (
-                    ( !starts[1] && !starts[0] ) || (
-                        ( i + 1 >= starts[1]
-                            && mo == starts[0] ) || mo > starts[0]
+                    ( !startDate && !startMonth ) || (
+                        ( i + 1 >= startDate
+                            && mo == startMonth ) || mo > startMonth
                         ))
                 ) && ( yr + 1 < yrs || (
-                    ( !ends[1] && !ends[0] )   || (
-                        ( i + 1 <= ends[1]
-                            && mo == ends[0] ) || mo < ends[0]
+                    ( !endDate && !endMonth )   || (
+                        ( i + 1 <= endDate
+                            && mo == endMonth ) || mo < endMonth
                         ))
                 )){
                     $cell.text(i + 1).addClass('date').hover(
@@ -240,12 +247,12 @@
                         })
                     .click(function () {
                         var chosenDateObj = new Date(
-                            $('select[name=year]', picker).val(),
-                            $('select[name=month]', picker).val(),
+                            $('select[name=year]', $picker).val(),
+                            $('select[name=month]', $picker).val(),
                             $(this).text());
                         $chosen.removeClass('chosen');  // move from
                         $(this).addClass('chosen');     // to here
-                        closeIt(el, picker, chosenDateObj);
+                        closeIt(el, $picker, chosenDateObj);
                     });
 
                     // highlight the previous chosen date
@@ -390,8 +397,8 @@
 
         // date string matching /^\d{1,2}\/\d{1,2}\/\d{2}|\d{4}$/
         // or four digit year
-        startdate: today.getFullYear() - 2,
-        enddate: today.getFullYear() + 2,
+        startdate: today.getFullYear() - 11,
+        enddate: today.getFullYear() + 11,
 
         // offset from the top left corner of the input element
         x : -1, // must be in px
@@ -399,3 +406,34 @@
     };
 
 })(jQuery);
+
+/**
+ * @author Samele Artuso <samuele.a@gmail.com>
+ */
+(function($) {
+    $.fn.unselectable = function() {
+        return this.each(function() {
+
+            $(this)
+            .css('-moz-user-select', 'none')        // FF
+            .css('-khtml-user-select', 'none')      // Safari, Google Chrome
+            .css('user-select', 'none');            // CSS 3
+
+            if ($.browser.msie) {                   // IE
+                $(this).each(function() {
+                    this.ondrag = function() {
+                        return false;
+                    };
+                });
+                $(this).each(function() {
+                    this.onselectstart = function() {
+                        return (false);
+                    };
+                });
+            } else if($.browser.opera) {
+                $(this).attr('unselectable', 'on');
+            }
+        });
+    };
+})(jQuery);
+

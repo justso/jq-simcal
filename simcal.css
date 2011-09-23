@@ -10,12 +10,20 @@
     z-index: 9999;
 }
 .simcal * {
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -o-user-select: none;
+    user-select: none;
     color: #000;
     font: 1em/1.5em sans-serif;
+    padding: 0;
     text-align: center;
     white-space: nowrap;
 }
 .simcal thead th {
+    border-right: 1px solid #ddd;
+    font-weight: bold;
     height: 3em;
 }
 .simcal tfoot td {
@@ -37,14 +45,17 @@
     color: #c00;
 }
 .simcal tbody td {
-    background: #fff;
+    background: #fafafa;
     border: 1px solid #ccc;
-    height: 2.5em;
+    border-width: 1px 0 0 0;
     text-align: center;
     width: 2.5em;
 }
 .simcal tbody td.date {
+    background: #fff;
+    border: 1px solid #ddd;
     cursor: pointer;
+    height: 2.5em;
 }
 .simcal tbody td.date.over {
     background-color: #090; /* go */

@@ -406,7 +406,7 @@
     };
 
 })(jQuery);
-
+/* ------------------------------------------------------------------------ */
 /**
  * @author Samele Artuso <samuele.a@gmail.com>
  */
@@ -436,4 +436,21 @@
         });
     };
 })(jQuery);
+/* ------------------------------------------------------------------------ */
+(function($){
+    $.loadCssFor = function (nom, cb){
+        var all, parts = (function(nom){
+            all = $('script[src*='+nom+'.]');
+            if (!all.length)
+                throw new Error('No script with path fragment: '+ nom);
+            if (all.length > 1)
+                console.warn('Multiple scripts with that path fragment');
+            return all.eq(0).attr('src').split('/').slice(0,-1);
+        })(nom);
+        parts.push(nom + '.css')
+        return $('<style>').appendTo('head').load(parts.join('/'), cb);
+    };
+})(jQuery);
+$.loadCssFor('simcal');
+/* ------------------------------------------------------------------------ */
 

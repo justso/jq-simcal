@@ -75,7 +75,7 @@
         /**
          * @return {jQuery} instance with table html
          */
-        function newPickerHTML () {
+        function newPickerHTML() {
             var years = []
             ,   $picker
             ,   monthselect
@@ -275,7 +275,7 @@
         // indicate that there is no datepicker for the currently
         // matched input element
 
-        function closeIt (el, $picker, dateObj) {
+        function closeIt(el, $picker, dateObj) {
             if (dateObj && dateObj.constructor == Date)
                 el.val($.fn.simcalPicker.formatOutput(dateObj));
 
@@ -287,27 +287,6 @@
                 hasPicker: false
             });
         }
-
-        // iterate the matched nodeset
-        return this.each(function () {
-            // functions and vars declared here are created for each
-            // matched element. so if your functions need to manage
-            // or access per-node state you can defined them
-            // here and use $this to get at the DOM element
-
-            if (!($(this).is('input')) ||
-                ('text' !== $(this).attr('type'))
-                    ) return;
-
-            $.data($(this).get(0), 'simcalPicker', {
-                hasPicker: false
-            });
-
-            // toggle a datepicker on these events
-            $(this).bind('keydown', function(){
-                $('span.close').trigger('click');
-            }).bind('mousedown focus', openPicker);
-        });
 
         function openPicker(evt) {
             var $this = $(evt.target)
@@ -339,9 +318,12 @@
                 $('body').prepend($picker);
 
                 // position the datepicker
-                var elPos = findPosition($this.get(0))
-                ,   x = (parseInt(opts.x) ? parseInt(opts.x) : 0) + elPos[0]
-                ,   y = (parseInt(opts.y) ? parseInt(opts.y) : 0) + elPos[1]
+                var parse = function (){
+                    window.parseInt(arguments[0],10);
+                }
+                ,   elPos = findPosition($this.get(0))
+                ,   x = (parse(opts.x) ? parse(opts.x) : 0) + elPos[0]
+                ,   y = (parse(opts.y) ? parse(opts.y) : 0) + elPos[1]
                 ;
                 $picker.css({
                     position: 'absolute',
@@ -377,6 +359,27 @@
                 loadMonth(null, $this, $picker, chosendate);
             }
         }
+
+        // iterate the matched nodeset
+        return this.each(function () {
+            // functions and vars declared here are created for each
+            // matched element. so if your functions need to manage
+            // or access per-node state you can defined them
+            // here and use $this to get at the DOM element
+
+            if (!($(this).is('input')) ||
+                ('text' !== $(this).attr('type'))
+                    ) return;
+
+            $.data($(this).get(0), 'simcalPicker', {
+                hasPicker: false
+            });
+
+            // toggle a datepicker on these events
+            $(this).bind('keydown', function(){
+                $('span.close').trigger('click');
+            }).bind('mousedown focus', openPicker);
+        });
     };
 
     // Finally, I like to expose default plugin options as public
@@ -406,7 +409,7 @@
     };
 
 })(jQuery);
-/* ------------------------------------------------------------------------ */
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 /**
  * @author Samele Artuso <samuele.a@gmail.com>
  */
@@ -436,7 +439,7 @@
         });
     };
 })(jQuery);
-/* ------------------------------------------------------------------------ */
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 (function($){
     $.loadCssFor = function (nom, cb){
         var all, parts = (function(nom){
@@ -447,10 +450,10 @@
                 console.warn('Multiple scripts with that path fragment');
             return all.eq(0).attr('src').split('/').slice(0,-1);
         })(nom);
-        parts.push(nom + '.css')
+        parts.push(nom + '.css');
         return $('<style>').appendTo('head').load(parts.join('/'), cb);
     };
 })(jQuery);
 $.loadCssFor('simcal');
-/* ------------------------------------------------------------------------ */
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 

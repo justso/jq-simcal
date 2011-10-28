@@ -121,7 +121,11 @@
                 $('tbody', $picker).append(
                     '<tr><td></td><td></td><td></td><td></td>'
                     + '<td></td><td></td><td></td></tr>');
-            return $picker.unselectable();
+
+            if ($.fn.unselectable)
+                $picker.unselectable();
+            return $picker;
+
         }
 
         /** get the real position of the input (well, anything really) **/
@@ -408,35 +412,13 @@
         y : 18  // must be in px
     };
 
-})(jQuery);
-/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-/**
- * @author Samele Artuso <samuele.a@gmail.com>
- */
-(function($) {
-    $.fn.unselectable = function() {
-        return this.each(function() {
+    // inits
+    $(function(){
+        if ($.jsPath){ // my ext
+            $.loadCssFor('simcal');
+            $.loadJs($.jsPath('simcal')+'/noSel.js');
+        }
+    });
 
-            $(this)
-            .css('-moz-user-select', 'none')        // FF
-            .css('-khtml-user-select', 'none')      // Safari, Google Chrome
-            .css('user-select', 'none');            // CSS 3
-
-            if ($.browser.msie) {                   // IE
-                $(this).each(function() {
-                    this.ondrag = function() {
-                        return false;
-                    };
-                });
-                $(this).each(function() {
-                    this.onselectstart = function() {
-                        return (false);
-                    };
-                });
-            } else if($.browser.opera) {
-                $(this).attr('unselectable', 'on');
-            }
-        });
-    };
 })(jQuery);
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */

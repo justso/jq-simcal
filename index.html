@@ -1,149 +1,182 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset='utf-8'>
-
-  <title>dvdrtrgn/simcal @ GitHub</title>
-<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.js"></script>
-<script src="https://raw.github.com/dvdrtrgn/simcal/master/simcal.js"></script>
-
-  <style type="text/css">
+    <meta charset='utf-8'>
+    <title>dvdrtrgn/simcal @ GitHub</title>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.js" type="text/javascript"></script>
+    <script src="https://raw.github.com/dvdrtrgn/simcal/master/simcal.js" type="text/javascript"></script>
+    <style type="text/css">
     body {
-      margin-top: 1.0em;
-      background-color: #ffffff;
-      color: #000000;
+        margin-top: 1.0em;
+        background-color: #ffffff;
+        color: #000000;
     }
     #container {
-      margin: 0 auto;
-      width: 700px;
+        margin: 0 auto;
+        width: 700px;
     }
-    h1 { font-size: 3.8em; color: #000000; margin-bottom: 3px; }
-    h1 .small { font-size: 0.4em; }
-    h1 a { text-decoration: none }
-    h2 { font-size: 1.5em; color: #000000; }
-    h3 { text-align: center; color: #000000; }
-    a { color: #000000; }
-    .description { font-size: 1.2em; margin-bottom: 30px; margin-top: 30px; font-style: italic;}
-    .download { float: right; }
-    pre { background: #000; color: #fff; padding: 15px;}
-    hr { border: 0; width: 80%; border-bottom: 1px solid #aaa}
-    .footer { text-align:center; padding-top:30px; font-style: italic; }
-
-.simcal {
-    background: #eee;
-    border-collapse: collapse;
-    border: 2px solid #999;
-    font-size: 8pt;
-    position: absolute;
-    width: auto;
-    z-index: 9999;
-}
-.simcal * {
-    -webkit-user-select: none;
-    -khtml-user-select: none;
-    -moz-user-select: none;
-    -o-user-select: none;
-    user-select: none;
-    color: #000;
-    font: 1em/1.5em sans-serif;
-    padding: 0;
-    text-align: center;
-    white-space: nowrap;
-}
-.simcal thead th {
-    border-right: 1px solid #ddd;
-    font-weight: bold;
-    height: 3em;
-}
-.simcal tfoot td {
-    height: 2.5em;
-    text-transform: capitalize;
-}
-.simcal th span {
-    font-size: 1.3em; /* header only */
-}
-.simcal th span,
-.simcal tfoot td span {
-    border: 1px solid #eee;
-    margin: .25em;
-    padding: .2em .5em;
-}
-.simcal span:hover {
-    background: #fff;
-    border: 1px outset #ccc;
-    color: #c00;
-}
-.simcal tbody td {
-    background: #fafafa;
-    border: 1px solid #ccc;
-    border-width: 1px 0 0 0;
-    text-align: center;
-    width: 2.5em;
-}
-.simcal tbody td.date {
-    background: #fff;
-    border: 1px solid #ddd;
-    cursor: pointer;
-    height: 2.5em;
-}
-.simcal tbody td.date.over {
-    background-color: #090; /* go */
-    color: #fff;
-}
-.simcal tbody td.date.chosen {
-    background-color: #900; /* stop */
-    color: #fff;
-    font-weight: bold;
-}
-.simcal tbody td.date.today {
-    background-color: #fc0; /* watch */
-    color: #000;
-}
-.simcal tbody td.date.chosen.today {
-    color: #900;
-}
-
-  </style>
+    h1 {
+        font-size: 3.8em;
+        color: #000000;
+        margin-bottom: 3px;
+    }
+    h1 .small {
+        font-size: 0.4em;
+    }
+    h1 a {
+        text-decoration: none
+    }
+    h2 {
+        font-size: 1.5em;
+        color: #000000;
+    }
+    h3 {
+        text-align: center;
+        color: #000000;
+    }
+    a {
+        color: #000000;
+        display: inline-block;
+        text-decoration: none;
+        border: 3px solid white;
+        border-bottom-color: #933;
+    }
+    a:hover {
+        background-color: #eee;
+        border-color: #ddd;
+        color: #c00;
+        border-bottom-color: #c00;
+    }
+    .description {
+        font-size: 1.2em;
+        margin-bottom: 30px;
+        margin-top: 30px;
+        font-style: italic;
+    }
+    .download {
+        float: right;
+    }
+    pre {
+        background: #633;
+        color: #fff;
+        padding: 15px;
+    }
+    hr {
+        border: 0;
+        width: 80%;
+        border-bottom: 1px solid #aaa
+    }
+    .footer {
+        text-align: center;
+        padding-top: 30px;
+        font-style: italic;
+    }
+    .simcal {
+        background: #eee;
+        border-collapse: collapse;
+        border: 2px solid #999;
+        font-size: 8pt;
+        position: absolute;
+        width: auto;
+        z-index: 9999;
+    }
+    .simcal * {
+        -webkit-user-select: none;
+        -khtml-user-select: none;
+        -moz-user-select: none;
+        -o-user-select: none;
+        user-select: none;
+        color: #000;
+        font: 1em/1.5em sans-serif;
+        padding: 0;
+        text-align: center;
+        white-space: nowrap;
+    }
+    .simcal thead th {
+        border-right: 1px solid #ddd;
+        font-weight: bold;
+        height: 3em;
+    }
+    .simcal tfoot td {
+        height: 2.5em;
+        text-transform: capitalize;
+    }
+    .simcal th span {
+        font-size: 1.3em; /* header only */
+    }
+    .simcal th span,
+    .simcal tfoot td span {
+        border: 1px solid #eee;
+        margin: .25em;
+        padding: .2em .5em;
+    }
+    .simcal span:hover {
+        background: #fff;
+        border: 1px outset #ccc;
+        color: #c00;
+    }
+    .simcal tbody td {
+        background: #fafafa;
+        border: 1px solid #ccc;
+        border-width: 1px 0 0 0;
+        text-align: center;
+        width: 2.5em;
+    }
+    .simcal tbody td.date {
+        background: #fff;
+        border: 1px solid #ddd;
+        cursor: pointer;
+        height: 2.5em;
+    }
+    .simcal tbody td.date.over {
+        background-color: #090; /* go */
+        color: #fff;
+    }
+    .simcal tbody td.date.chosen {
+        background-color: #900; /* stop */
+        color: #fff;
+        font-weight: bold;
+    }
+    .simcal tbody td.date.today {
+        background-color: #fc0; /* watch */
+        color: #000;
+    }
+    .simcal tbody td.date.chosen.today {
+        color: #900;
+    }
+    img.c1 {
+        position: absolute;
+        top: 0;
+        right: 0;
+        border: 0;
+    }
+    </style>
 </head>
-
 <body>
-  <a href="http://github.com/dvdrtrgn/simcal"><img style="position: absolute; top: 0; right: 0; border: 0;" src="http://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub" /></a>
-
-  <div id="container">
-
-    <div class="download">
-      <a href="http://github.com/dvdrtrgn/simcal/zipball/master">
-        <img border="0" width="90" src="http://github.com/images/modules/download/zip.png"></a>
-      <a href="http://github.com/dvdrtrgn/simcal/tarball/master">
-        <img border="0" width="90" src="http://github.com/images/modules/download/tar.png"></a>
-    </div>
-
-    <h1><a href="http://github.com/dvdrtrgn/simcal">simcal</a>
-      <span class="small">by <a href="http://github.com/dvdrtrgn">dvdrtrgn</a></span></h1>
-
-    <div class="description">
-      rewrite of a simple cal implementation for jquery
-    </div>
-
-    <p>It was hard finding a ultra minimal but jquery based plugin.
-I found a lot of abandoned projects and overly complex Web1.0 stuff.
-This looks like the best starting point.
-Lifted wholesale from http://teddevito.com/demos/calendar.php</p>
-
-<!--        insert          -->
-<hr>
-<script>
+    <a href="http://github.com/dvdrtrgn/simcal"><img class="c1" src="http://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"></a>
+    <div id="container">
+        <div class="download">
+            <a href="http://github.com/dvdrtrgn/simcal/zipball/master"><img border="0" width="90" src="http://github.com/images/modules/download/zip.png"></a> <a href="http://github.com/dvdrtrgn/simcal/tarball/master"><img border="0" width="90" src="http://github.com/images/modules/download/tar.png"></a>
+        </div>
+        <h1><a href="http://github.com/dvdrtrgn/simcal">simcal</a> <span class="small">by <a href="http://github.com/dvdrtrgn">dvdrtrgn</a></span></h1>
+        <div class="description">
+            rewrite of a simple cal implementation for jquery
+        </div>
+        <p>It was hard finding a ultra minimal but jquery based plugin. I found a lot of abandoned projects and overly complex Web1.0 stuff. This looks like the best starting point. Lifted wholesale from <a href="http://teddevito.com/demos/calendar.php">http://teddevito.com/demos/calendar.php</a></p>
+        <!--        insert          -->
+        <hr>
+        <script type="text/javascript">
 $(function () {
-$('input.one').simcalPicker();
-$('input.two').simcalPicker({ startdate: 2008, enddate: 2012 });
-$('input.three').simcalPicker({ chosendate: '9/9/2010', startdate: '6/10/2008', enddate: '7/20/2011' });
-});
-</script>
-<p>Some test inputs, each with a different setup:</p>
-<p>input.one <input class="one" type="text" name="date" value=""> <input class="one" type="text" name="date" value="1/1/2011"></p>
-<p>input.two <input class="two" type="text" name="date" value=""></p>
-<p>input.three <input class="three" type="text" name="date" value=""></p>
-<pre>
+        $('input.one').simcalPicker();
+        $('input.two').simcalPicker({ startdate: 2008, enddate: 2012 });
+        $('input.three').simcalPicker({ chosendate: '9/9/2010', startdate: '6/10/2008', enddate: '7/20/2011' });
+        });
+        </script>
+        <p>Some test inputs, each with a different setup:</p>
+        <p>input.one <input class="one" type="text" name="date" value=""> <input class="one" type="text" name="date" value="1/1/2011"></p>
+        <p>input.two <input class="two" type="text" name="date" value=""></p>
+        <p>input.three <input class="three" type="text" name="date" value=""></p>
+        <pre>
 $('input.one').simcalPicker();
 $('input.two').simcalPicker({
     startdate: 2008, enddate: 2012
@@ -152,34 +185,25 @@ $('input.three').simcalPicker({
     chosendate: '9/9/2010', startdate: '6/10/2008', enddate: '7/20/2011'
 });
 </pre>
-<hr>
-<!--        inserted          -->
-
-<h2>Dependencies</h2>
-<p>jquery-1.4 &lt;</p>
-<h2>Install</h2>
-<pre>
-    &lt;script src="simcal.js">&lt;/script>
+        <hr>
+        <!--        inserted          -->
+        <h2>Dependencies</h2>
+        <p> &gt; jquery-1.4</p>
+        <h2>Install</h2>
+        <pre>
+    &lt;script src="simcal.js"&gt;&lt;/script&gt;
     $('input[type=text]').simcalPicker();
 </pre>
-
-    <h2>Download</h2>
-    <p>
-      You can download this project in either
-      <a href="http://github.com/dvdrtrgn/simcal/zipball/master">zip</a> or
-      <a href="http://github.com/dvdrtrgn/simcal/tarball/master">tar</a> formats.
-    </p>
-    <p>You can also clone the project with <a href="http://git-scm.com">Git</a>
-      by running:
-      <pre>$ git clone git://github.com/dvdrtrgn/simcal</pre>
-    </p>
-
-    <div class="footer">
-      get the source code on GitHub : <a href="http://github.com/dvdrtrgn/simcal">dvdrtrgn/simcal</a>
+        <h2>Download</h2>
+        <p>You can download this project in either <a href="http://github.com/dvdrtrgn/simcal/zipball/master">zip</a> or <a href="http://github.com/dvdrtrgn/simcal/tarball/master">tar</a> formats.</p>
+        <p>You can also clone the project with <a href="http://git-scm.com">Git</a> by running:</p>
+        <pre>
+$ git clone git://github.com/dvdrtrgn/simcal
+</pre>
+        <p></p>
+        <div class="footer">
+            get the source code on GitHub : <a href="http://github.com/dvdrtrgn/simcal">dvdrtrgn/simcal</a>
+        </div>
     </div>
-
-  </div>
-
-
 </body>
 </html>

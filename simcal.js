@@ -416,7 +416,7 @@
     $(function(){
         if ($.jsPath){ // my ext
             $.loadCssFor('simcal');
-            $.loadJs($.jsPath('simcal')+'/noSel.js');
+            $.loadJs($.jsPath('simcal')+'/lib/noSel.js');
         }
     });
 

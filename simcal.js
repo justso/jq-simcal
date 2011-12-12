@@ -1,48 +1,51 @@
 /*
  *  The script only works on "input [type=text]"
- *  Don't declare anything out here in the global namespace
+ *  global namespace -- declare nothing out here
  *
+ *  dependancies:
+ *      jqext.js
+ *      noSel.js
  */
 
 (function ($) { // private scope (inside you can use $ instead of jQuery)
 
-    // Functions and vars declared here are effectively 'singletons'.
-    // there will be only a single instance of them.
-    // So this is a good place to declare any immutable items
-    // or stateless functions. For example:
+    // declarations here are like singletons
+    // good for immutable items or stateless functions
 
     var today = new Date(); // used in defaults
     var months = 'Jan Feb March April May June July Aug Sept Oct Nov Dec'.split(' ')
     ,   mlengths = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
-    var dateRegEx = /^\d{1,2}\/\d{1,2}\/\d{2}|\d{4}$/
-    ,   yearRegEx = /^\d{4,4}$/;
-    var $chosen, $today;  // keep tabs on these
+    var dateRE = /^\d{1,2}\/\d{1,2}\/\d{2}|\d{4}$/
+    ,   yearRE = /^\d{4,4}$/;
+    var $chosen, $today;  // keep tabs on these elements
+    var root = $.jsPath ? $.jsPath('simcal') : ''; // fail gracefully w/o ext
 
-    // next, declare the plugin function
-    $.fn.simcalPicker = function (options) {
-        // Functions and vars declared here are created each time your
-        // plugin function is invoked.
+    // next, declare the plugin function (with legacy name)
+    $.fn.simcal = $.fn.simcalPicker = function (options) {
+
+        // declarations here created each time plugin is invoked
         // You could probably refactor your 'build', 'load_month', etc,
         // functions to be passed the DOM element from below.
 
-        var opts = $.extend({}, $.fn.simcalPicker.defaults, options);
+        var opts = $.extend({}, $.fn.simcal.defaults, options);
 
-        // replaces a date string with a date object in opts.startdate
-        // and opts.enddate, if one exists populates two new properties
+        // replaces a date string with a date object
+        // in opts.startdate and opts.enddate,
+        // if one exists populates two new properties
         // with a ready-to-use year: opts.startyear and opts.endyear
 
-        setupYearRange();
+        setupRange();
         /** extracts and setup a valid year range from the opts object **/
-        function setupYearRange() {
+        function setupRange() {
             var startyear
             ,   endyear
             ;
             if (opts.startdate.constructor == Date) {
                 startyear = opts.startdate.getFullYear();
             } else if (opts.startdate) {
-                if (yearRegEx.test(opts.startdate)) {
+                if (yearRE.test(opts.startdate)) {
                     startyear = opts.startdate;
-                } else if (dateRegEx.test(opts.startdate)) {
+                } else if (dateRE.test(opts.startdate)) {
                     opts.startdate = new Date(opts.startdate);
                     startyear = opts.startdate.getFullYear();
                 } else {
@@ -56,9 +59,9 @@
             if (opts.enddate.constructor == Date) {
                 endyear = opts.enddate.getFullYear();
             } else if (opts.enddate) {
-                if (yearRegEx.test(opts.enddate)) {
+                if (yearRE.test(opts.enddate)) {
                     endyear = opts.enddate;
-                } else if (dateRegEx.test(opts.enddate)) {
+                } else if (dateRE.test(opts.enddate)) {
                     opts.enddate = new Date(opts.enddate);
                     endyear = opts.enddate.getFullYear();
                 } else {
@@ -70,12 +73,12 @@
             opts.endyear = endyear;
         }
 
-        /** HTML factory for the actual datepicker table element **/
+        /** HTML factory for the actual date-picker table element **/
         // Read the year range to setup the correct years in our HTML <select>
         /**
          * @return {jQuery} instance with table html
          */
-        function newPickerHTML() {
+        function makeHTML() {
             var years = []
             ,   $picker
             ,   monthselect
@@ -83,26 +86,29 @@
             ,   i
             ;
             // process year range into an array
-            for (i = 0; i <= opts.endyear - opts.startyear; i++)
+            for (i = 0; i <= opts.endyear - opts.startyear; i++){
                 years[i] = opts.startyear + i;
+            }
 
             // build the table structure
-            $picker = $('<table class="simcal"></table>');
-            $picker.append('<thead></thead>');
-            $picker.append('<tfoot></tfoot>');
-            $picker.append('<tbody></tbody>');
+            $picker = $('<table class="simcal">');
+            $picker.append('<thead>');
+            $picker.append('<tfoot>');
+            $picker.append('<tbody>');
 
             // month select field
             monthselect = '<select name="month">';
-            for (i in months)
+            for (i in months){
                 monthselect += '<option value="' + i + '">'
                 + months[i] + '</option>';
+            }
             monthselect += '</select>';
 
             // year select field
             yearselect = '<select name="year">';
-            for (i in years)
+            for (i in years){
                 yearselect += '<option>' + years[i] + '</option>';
+            }
             yearselect += '</select>';
 
             $('thead', $picker).append(
@@ -117,20 +123,22 @@
                 '<tr><td colspan="2"><span class="today">today</span></td>'
                 + '<td colspan="3">&nbsp;</td><td colspan="2">'
                 + '<span class="close">close</span></td></tr>');
-            for (i = 0; i < 6; i++)
+            for (i = 0; i < 6; i++){
                 $('tbody', $picker).append(
                     '<tr><td></td><td></td><td></td><td></td>'
                     + '<td></td><td></td><td></td></tr>');
+            }
 
-            if ($.fn.unselectable)
+            if ($.fn.unselectable){
                 $picker.unselectable();
+            }
             return $picker;
 
         }
 
-        /** get the real position of the input (well, anything really) **/
-        //http://www.quirksmode.org/js/findpos.html
         function findPosition(obj) {
+            /** get the real position of the input (well, anything really) **/
+            // http://www.quirksmode.org/js/findpos.html
             var curleft, curtop
             ;
             curleft = curtop = 0;
@@ -145,11 +153,11 @@
             }
         }
 
-        /** load the initial date and handle all date-navigation **/
-        // initial calendar load (e is null)
-        // prevMonth & nextMonth buttons
-        // onchange for the select fields
         function loadMonth(e, el, $picker, chosendate) {
+            /** load the initial date and handle all date-navigation **/
+            // initial calendar load (e is null)
+            // prevMonth & nextMonth buttons
+            // onchange for the select fields
 
             // reference our years for the nextMonth and prevMonth buttons
             var mo  = $('select[name=month]', $picker).get(0).selectedIndex
@@ -262,26 +270,26 @@
                     // highlight the previous chosen date
                     if (i + 1 == chosendate.getDate()
                         && m == chosendate.getMonth()
-                        && y == chosendate.getFullYear())
+                        && y == chosendate.getFullYear()){
                         $chosen = $cell.addClass('chosen');
+                    }
                     // highlight today as expected
                     if (i + 1 == today.getDate()
                         && m == today.getMonth()
-                        && y == today.getFullYear())
+                        && y == today.getFullYear()){
                         $today = $cell.addClass('today');
+                    }
                 }
             }
         }
 
-        /** closes the datepicker **/
-        // sets the currently matched input element's value to the date,
-        // if one is available remove the table element from the DOM
-        // indicate that there is no datepicker for the currently
-        // matched input element
-
         function closeIt($fld, $picker, dateObj) {
+            // set input element to the date,
+            // if one is available remove the table element
+            // indicate that there is no date-picker for this element
+
             if (dateObj && dateObj.constructor == Date)
-                $fld.val($.fn.simcalPicker.formatOutput(dateObj));
+                $fld.val($.fn.simcal.formatOutput(dateObj));
 
             $picker.fadeOut(333,function (){ // glimpse the chosen day
                 $(this).remove();
@@ -290,7 +298,7 @@
             $fld.removeClass('picker');
         }
 
-        function openPicker(evt) {
+        function openIt(evt) {
             var $fld = $(evt.target)
             ,   initialdate, chosendate
             ,   $picker
@@ -298,26 +306,27 @@
 
             if (!$fld.is('.picker')){
 
-                // store data telling us there is already a datepicker
+                // store data telling us there is already a date-picker
                 $(this).addClass('picker');
 
                 // validate the form's initial content for a date
                 initialdate = $fld.val();
 
-                if (initialdate && dateRegEx.test(initialdate))
+                if (initialdate && dateRE.test(initialdate)) {
                     chosendate = new Date(initialdate);
-                else if (opts.chosendate.constructor == Date)
+                } else if (opts.chosendate.constructor == Date) {
                     chosendate = opts.chosendate;
-                else if (opts.chosendate)
+                } else if (opts.chosendate) {
                     chosendate = new Date(opts.chosendate);
-                else
+                } else {
                     chosendate = today;
+                }
 
-                // insert the datepicker in the DOM
-                $picker = newPickerHTML();
+                // insert the date-picker in the DOM
+                $picker = makeHTML();
                 $('body').prepend($picker);
 
-                // position the datepicker
+                // position the date-picker
                 var parse = function (){
                     window.parseInt(arguments[0],10);
                 }
@@ -360,25 +369,26 @@
             }
         }
 
-        // iterate the matched nodeset
         return this.each(function () {
 
-            // functions and vars declared here are created for each
-            // matched element. so if your functions need to manage
-            // or access per-node state you can defined them
-            // here and use $this to get at the DOM element
+            // iterate through the matched nodeset
+            // declarations here are for each instance
+            // this is in the context of DOM element
 
             var $fld = $(this)
             ;
             if (!($fld.is('input')) ||
                 ('text' !== $fld.attr('type'))
                     ) return;
-            $fld.removeClass('picker').addClass('simcal');
+            $fld.addClass('simcal').removeClass('picker'); // remove in case already bound
+            $fld.css({
+                backgroundImage:'url('+opts.root+'/lib/cal-'+opts.icon+'.png)'
+            });
 
-            // toggle a datepicker on these events
+            // toggle a date-picker on these events
             $fld.bind('keydown', function(){
                 $('span.close').trigger('click');
-            }).bind('mousedown focus', openPicker);
+            }).bind('mousedown focus', openIt);
         });
     };
 
@@ -386,7 +396,7 @@
     // so they can be manipulated. One way to do this is to add a property
     // to the already-public plugin fn
 
-    $.fn.simcalPicker.formatOutput = function (dateObj) {
+    $.fn.simcal.formatOutput = function (dateObj) {
         return [
         dateObj.getMonth() + 1,
         dateObj.getDate(),
@@ -394,25 +404,25 @@
         ].join('/');
     };
 
-    $.fn.simcalPicker.defaults = {
-        // date string matching /^\d{1,2}\/\d{1,2}\/\d{2}|\d{4}$/
-        chosendate: today,
+    $.fn.simcal.defaults = {
+        icon: 16,
+        root: root,
 
-        // date string matching /^\d{1,2}\/\d{1,2}\/\d{2}|\d{4}$/
-        // or four digit year
+        chosendate: today,
         startdate: today.getFullYear() - 11,
         enddate: today.getFullYear() + 11,
 
-        // offset from the top left corner of the input element
-        x : -1, // must be in px
-        y : 18  // must be in px
+        // offset from the top left of input element in px
+        x : -1,
+        y : 18
     };
 
     // inits
     $(function(){
-        if ($.jsPath){ // my ext
+        if (root){ // my ext
+            $.loadJs(root+'/lib/noSel.js');
             $.loadCssFor('simcal');
-            $.loadJs($.jsPath('simcal')+'/lib/noSel.js');
+            $('.calpick').simcal();
         }
     });
 

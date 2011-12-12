@@ -11,6 +11,11 @@ Demo
 $(function(){
     module('EQUIVs');
 
-    $('#Text-1').simcalPicker()
+    $('#Text-1').simcalPicker({
+        icon:9
+    });
+    $('#Text-2').simcalPicker({
+        icon:12
+    });
 
 });

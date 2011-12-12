@@ -2,8 +2,8 @@
 <html>
     <head>
         <title>QUnit starter</title>
-<!--        <script src="http://code.jquery.com/jquery-latest.js"></script>-->
-        <script src="../../../sources/jquery-1.4.2.js"></script>
+        <script src="http://code.jquery.com/jquery-latest.js"></script>
+        <!--<script src="../../../sources/jquery-1.4.2.js"></script>-->
         <script src="http://code.jquery.com/qunit/qunit-git.js"></script>
         <link  href="http://code.jquery.com/qunit/qunit-git.css" rel="stylesheet">
         <script src="../../jqext.js"></script>
@@ -12,17 +12,27 @@
         <script src="tests.js"></script>
     </head>
     <body>
-   <form id="main">
+        <form id="main">
             <table>
                 <tbody>
                     <tr>
                         <td>
-                            [Text]
-                            <input name="Text" type="text" id="Text-1">
+                            <label>
+                                <strong>Text-1</strong>
+                                <input class="calpick" name="Text" type="text" id="Text-1">
+                            </label>
                         </td>
                         <td>
-                            [Text]
-                            <input name="Text" type="text" id="Text-2">
+                            <label>
+                                <strong>Text-2</strong>
+                                <input class="calpick" name="Text" type="text" id="Text-2">
+                            </label>
+                        </td>
+                        <td>
+                            <label>
+                                <strong>Text-3</strong>
+                                <input class="calpick" name="Text" type="text" id="Text-3">
+                            </label>
                         </td>
                     </tr>
                 </tbody>

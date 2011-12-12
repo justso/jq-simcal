@@ -279,34 +279,30 @@
         // indicate that there is no datepicker for the currently
         // matched input element
 
-        function closeIt(el, $picker, dateObj) {
+        function closeIt($fld, $picker, dateObj) {
             if (dateObj && dateObj.constructor == Date)
-                el.val($.fn.simcalPicker.formatOutput(dateObj));
+                $fld.val($.fn.simcalPicker.formatOutput(dateObj));
 
             $picker.fadeOut(333,function (){ // glimpse the chosen day
                 $(this).remove();
             });
             $picker = null;
-            $.data(el.get(0), 'simcalPicker', {
-                hasPicker: false
-            });
+            $fld.removeClass('picker');
         }
 
         function openPicker(evt) {
-            var $this = $(evt.target)
+            var $fld = $(evt.target)
             ,   initialdate, chosendate
             ,   $picker
             ;
 
-            if (false == $.data($this.get(0), 'simcalPicker').hasPicker) {
+            if (!$fld.is('.picker')){
 
                 // store data telling us there is already a datepicker
-                $.data($this.get(0), 'simcalPicker', {
-                    hasPicker: true
-                });
+                $(this).addClass('picker');
 
                 // validate the form's initial content for a date
-                initialdate = $this.val();
+                initialdate = $fld.val();
 
                 if (initialdate && dateRegEx.test(initialdate))
                     chosendate = new Date(initialdate);
@@ -325,7 +321,7 @@
                 var parse = function (){
                     window.parseInt(arguments[0],10);
                 }
-                ,   elPos = findPosition($this.get(0))
+                ,   elPos = findPosition($fld.get(0))
                 ,   x = (parse(opts.x) ? parse(opts.x) : 0) + elPos[0]
                 ,   y = (parse(opts.y) ? parse(opts.y) : 0) + elPos[1]
                 ;
@@ -338,19 +334,19 @@
                 // bind events to the table controls
                 $('span', $picker).css('cursor', 'pointer');
                 $('select', $picker).bind('change', function () {
-                    loadMonth(null, $this, $picker, chosendate);
+                    loadMonth(null, $fld, $picker, chosendate);
                 });
                 $('span.prevMonth', $picker).click(function (e) {
-                    loadMonth(e, $this, $picker, chosendate);
+                    loadMonth(e, $fld, $picker, chosendate);
                 });
                 $('span.nextMonth', $picker).click(function (e) {
-                    loadMonth(e, $this, $picker, chosendate);
+                    loadMonth(e, $fld, $picker, chosendate);
                 });
                 $('span.today', $picker).click(function () {
-                    closeIt($this, $picker, new Date());
+                    closeIt($fld, $picker, new Date());
                 });
                 $('span.close', $picker).click(function () {
-                    closeIt($this, $picker);
+                    closeIt($fld, $picker);
                 });
 
                 // set the initial values for the month and year select fields
@@ -360,27 +356,27 @@
                 $('select[name=year]', $picker).get(0)
                 .selectedIndex = Math.max(0, chosendate.getFullYear() - opts.startyear);
 
-                loadMonth(null, $this, $picker, chosendate);
+                loadMonth(null, $fld, $picker, chosendate);
             }
         }
 
         // iterate the matched nodeset
         return this.each(function () {
+
             // functions and vars declared here are created for each
             // matched element. so if your functions need to manage
             // or access per-node state you can defined them
             // here and use $this to get at the DOM element
 
-            if (!($(this).is('input')) ||
-                ('text' !== $(this).attr('type'))
+            var $fld = $(this)
+            ;
+            if (!($fld.is('input')) ||
+                ('text' !== $fld.attr('type'))
                     ) return;
-
-            $.data($(this).get(0), 'simcalPicker', {
-                hasPicker: false
-            });
+            $fld.removeClass('picker').addClass('simcal');
 
             // toggle a datepicker on these events
-            $(this).bind('keydown', function(){
+            $fld.bind('keydown', function(){
                 $('span.close').trigger('click');
             }).bind('mousedown focus', openPicker);
         });

@@ -1,6 +1,11 @@
 @charset "utf-8";
 
-.simcal {
+input.simcal {
+    background-image: url(lib/cal.png);
+    background-repeat: no-repeat;
+    background-position: right center;
+}
+table.simcal {
     background: #eee;
     border-collapse: collapse;
     border: 2px solid #999;

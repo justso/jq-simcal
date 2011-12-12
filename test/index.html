@@ -2,10 +2,31 @@
 <html>
     <head>
         <title>QUnit starter</title>
-        <script src="http://code.jquery.com/jquery-latest.js"></script>
+<!--        <script src="http://code.jquery.com/jquery-latest.js"></script>-->
+        <script src="../../../sources/jquery-1.4.2.js"></script>
         <script src="http://code.jquery.com/qunit/qunit-git.js"></script>
         <link  href="http://code.jquery.com/qunit/qunit-git.css" rel="stylesheet">
+        <script src="../../jqext.js"></script>
+        <script src="../simcal.js"></script>
         <script src="boot.js"></script>
+        <script src="tests.js"></script>
     </head>
-    <body></body>
+    <body>
+   <form id="main">
+            <table>
+                <tbody>
+                    <tr>
+                        <td>
+                            [Text]
+                            <input name="Text" type="text" id="Text-1">
+                        </td>
+                        <td>
+                            [Text]
+                            <input name="Text" type="text" id="Text-2">
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </form>
+    </body>
 </html>

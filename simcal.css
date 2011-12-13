@@ -6,7 +6,7 @@ dynamic classnames:
     .picker  .. has a simcal showing
 */
 input.simcal {
-    background-image: url(lib/cal-14.png);
+    background-image: url(lib/cal-16.png);
     background-repeat: no-repeat;
     background-position: right bottom;
 }

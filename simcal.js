@@ -378,7 +378,7 @@
             var $fld = $(this)
             ;
             if (!($fld.is('input')) ||
-                ('text' !== $fld.attr('type'))
+                ('text' !== $fld.prop('type'))
                     ) return;
             $fld.addClass('simcal').removeClass('picker'); // remove in case already bound
             $fld.css({
@@ -405,7 +405,7 @@
     };
 
     $.fn.simcal.defaults = {
-        icon: 16,
+        icon: 14,
         root: root,
 
         chosendate: today,

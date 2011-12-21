@@ -1,5 +1,5 @@
 /* -VERSION-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- *
- *  :test/boot.js  ^  dvdrtrgn  ^  2011-12-10 ..
+ *  :test/boot.js  ^  dvdrtrgn  ^  2011-12
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 jQuery(function(){
     jQuery('body').append('<h1 id="qunit-header">'+document.title+'</h1>'   +
@@ -9,8 +9,8 @@ jQuery(function(){
         '<div id="qunit-fixture"></div>');
 });
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-    module("NULL");
-    test('empty',function(){
-        equal(2+2, 4, 'duh 2+2');
-    });
+module("INIT");
+test('empty',function(){
+    equal(2+2, 4, 'duh 2+2');
+});
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */

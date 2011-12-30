@@ -9,6 +9,8 @@ input.simcal {
     background-image: url(lib/cal-16.png);
     background-repeat: no-repeat;
     background-position: right bottom;
+    width: 8em;
+    font-family: monospace;
 }
 table.simcal {
     background: #eee;

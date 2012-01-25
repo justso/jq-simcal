@@ -1,9 +1,9 @@
-/* ======================================================================== */
+/* =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-= */
     It was hard finding a ultra minimal but jquery based plugin.
     I found a lot of abandoned projects and overly complex Web1.0 stuff.
     This looks like the best starting point.
     Lifted wholesale from http://teddevito.com/demos/calendar.php
-/* ======================================================================== */
+/* =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-= */
 
 simple jQuery date-picker plugin
 

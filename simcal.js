@@ -296,6 +296,7 @@
             });
             $picker = null;
             $fld.removeClass('picker');
+            $fld.trigger('keyup').trigger('change');
         }
 
         function openIt(evt) {
@@ -337,7 +338,7 @@
                 $picker.css({
                     position: 'absolute',
                     left: x,
-                    top: y
+                    top: y + opts.icon
                 });
 
                 // bind events to the table controls
@@ -405,7 +406,7 @@
     };
 
     $.fn.simcal.defaults = {
-        icon: 14,
+        icon: 16, // integer used in position
         root: root,
 
         chosendate: today,

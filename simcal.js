@@ -389,7 +389,7 @@
             // toggle a date-picker on these events
             $fld.bind('keydown', function(){
                 $('span.close').trigger('click');
-            }).bind('mousedown focus', openIt);
+            }).bind('mousedown', openIt);
         });
     };
 

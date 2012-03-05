@@ -382,9 +382,6 @@
                 ('text' !== $fld.prop('type'))
                     ) return;
             $fld.addClass('simcal').removeClass('picker'); // remove in case already bound
-            $fld.css({
-                backgroundImage:'url('+opts.root+'/lib/cal-'+opts.icon+'.png)'
-            });
 
             // toggle a date-picker on these events
             $fld.bind('keydown', function(){
@@ -421,8 +418,8 @@
     // inits
     $(function(){
         if (root){ // my ext
-            $.loadJs(root+'/lib/noSel.js');
-            $.loadCssFor('simcal');
+            // $.loadJs(root+'/lib/noSel.js');
+            // $.loadCssFor('simcal');
             $('.calpick').simcal();
         }
     });

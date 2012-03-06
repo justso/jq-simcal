@@ -296,7 +296,7 @@
             });
             $picker = null;
             $fld.removeClass('picker');
-            $fld.trigger('keyup').trigger('change');
+            $fld.trigger('keyup').trigger('change').focus();
         }
 
         function openIt(evt) {

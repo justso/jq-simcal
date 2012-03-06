@@ -10,7 +10,6 @@ input.simcal {
     background-repeat: no-repeat;
     background-position: right bottom;
     width: 8em;
-    font-family: monospace;
 }
 table.simcal {
     background: #eee;

@@ -120,7 +120,7 @@
             if (yr + 1 === yrs && 11 === mo) $('span.nextMonth', $picker).css('visibility', 'hidden');
             else $('span.nextMonth', $picker).css('visibility', 'visible');
 
-            $cells = $('tbody td', $picker).unbind().empty().removeClass('date');
+            $cells = $('tbody td', $picker).unbind('.simcal').empty().removeClass('date');
             m = parse( $('select[name=month]', $picker).val() );
             y = parse( $('select[name=year]', $picker).val() );
             d = new Date(y, m, 1);
@@ -206,7 +206,7 @@
                     top: elPos.top + O.icon
                 });
                 $('span', $picker).css('cursor', 'pointer');
-                $('select', $picker).bind('change', function () {
+                $('select', $picker).bind('change.simcal', function () {
                     loadM(null, me, $picker, picD);
                 });
                 $('span.prevMonth', $picker).click(function (e) {
@@ -231,9 +231,9 @@
             var me = $(this);
             if (!(me.is('input')) || ('text' !== me.prop('type'))) return;
             me.addClass('simcal').removeClass('picker');
-            me.bind('keydown', function () {
+            me.bind('keydown.simcal', function () {
                 $('span.close').trigger('click');
-            }).bind('mousedown', openIt);
+            }).bind('mousedown.simcal', openIt);
         });
     };
     $.fn.simcal.formatOutput = function (dateObj) {

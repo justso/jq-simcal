@@ -1,15 +1,24 @@
+/*global  console, Date, Math, jQuery, parseInt, $ */
 (function ($) {
-    var today = new Date(),
-        months = 'Jan Feb March April May June July Aug Sept Oct Nov Dec'.split(' '),
-        mlengths = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31],
-        dateRE = /^\d{1,2}\/\d{1,2}\/\d{2}|\d{4}$/,
-        yearRE = /^\d{4,4}$/,
-        $chosen, $today;
-    $.fn.simcal = function (options) {
-        var O = $.extend({}, $.fn.simcal.defaults, options);
-        setupRange();
+    var today = new Date()
+    ,    months = 'Jan Feb March April May June July Aug Sept Oct Nov Dec'.split(' ')
+    ,    mlengths = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
+    ,    dateRE = /^\d{1,2}\/\d{1,2}\/\d{2}|\d{4}$/
+    ,    yearRE = /^\d{4,4}$/
+    ,    $chosen, $today
+    ;
+    function parse(x) {
+        return parseInt(x, 10);
+    }
+    function formatOutput(dateObj) {
+        return [dateObj.getMonth() + 1, dateObj.getDate(), dateObj.getFullYear()].join('/');
+    }
 
-        function setupRange() {
+    $.fn.simcal = function (options) {
+        var My = {}
+        ,   O = $.extend({}, $.fn.simcal.defaults, options);
+
+        My.setupRange = function () {
             var begY, endY;
             if (O.begD.constructor === Date) {
                 begY = O.begD.getFullYear();
@@ -41,14 +50,12 @@
                 endY = today.getFullYear();
             }
             O.endY = endY;
-        }
+        };
 
-        function makeHTML() {
-            var years = [],
-                $picker,
-                Msel,
-                Ysel,
-                i;
+        My.makeHTML = function () {
+            var years = []
+            ,   $picker, Msel, Ysel, i
+            ;
             for (i = 0; i <= O.endY - O.begY; i++) years[i] = O.begY + i;
             $picker = $('<table class="simcal">');
             $picker.append('<thead>');
@@ -70,10 +77,10 @@
             for (i = 0; i < 6; i++) {
                 $('tbody', $picker).append('<tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>');
             }
-            return expPick($picker);
-        }
+            return My.expPick($picker);
+        };
 
-        function expPick($p) {
+        My.expPick = function ($p) {
             $p.sel = function (str) {
                 str = (str === 'm' ? 'month' : str);
                 str = (str === 'y' ? 'year' : str);
@@ -81,19 +88,16 @@
             };
             if ($.fn.nosel) $p.nosel();
             return $p;
-        }
+        };
 
-        function loadM(e, el, $picker, picD) {
-            var mo = $picker.sel('m').selectedIndex,
-                yr = $picker.sel('y').selectedIndex,
-                yrs = $('select[name=year] option', $picker).get().length,
-                beg = {},
-                end = {},
-                m, y, d, i,
-                $cells,
-                $cell,
-                begAt,
-                numdays;
+        My.loadM = function (e, el, $picker, picD) {
+            var mo = $picker.sel('m').selectedIndex
+            ,   yr = $picker.sel('y').selectedIndex
+            ,   yrs = $('select[name=year] option', $picker).get().length
+            ,   beg = {}
+            ,   end = {}
+            ,   m, y, d, i, $cells, $cell, begAt, numdays, clicky
+            ;
             if (e && $(e.target).hasClass('prevMonth')) {
                 if (0 === mo && yr) {
                     yr -= 1;
@@ -121,24 +125,29 @@
             else $('span.nextMonth', $picker).css('visibility', 'visible');
 
             $cells = $('tbody td', $picker).unbind('.simcal').empty().removeClass('date');
-            m = parse( $('select[name=month]', $picker).val() );
-            y = parse( $('select[name=year]', $picker).val() );
+            m = parse($('select[name=month]', $picker).val());
+            y = parse($('select[name=year]', $picker).val());
             d = new Date(y, m, 1);
             begAt = d.getDay();
-            numdays = leaper(y, m);
-            beggar(beg, O.begD);
-            beggar(end, O.endD);
+            numdays = My.leaper(y, m);
+            My.beggar(beg, O.begD);
+            My.beggar(end, O.endD);
             if ($today) $today.removeClass('today');
+            clicky = function () {
+                var me = $(this)
+                ,   picDateObj  = new Date(
+                    $('select[name=year]', $picker).val(),
+                    $('select[name=month]', $picker).val(),
+                    me.text())
+                ;
+                $chosen.removeClass('chosen');
+                me.addClass('chosen');
+                My.hide(el, $picker, picDateObj);
+            };
             for (i = 0; i < numdays; i++) {
                 $cell = $($cells.get(i + begAt)).removeClass('chosen');
                 if ((yr || ((!beg.D && !beg.M) || ((i + 1 >= beg.D && mo === beg.M) || mo > beg.M))) && (yr + 1 < yrs || ((!end.D && !end.M) || ((i + 1 <= end.D && mo === end.M) || mo < end.M)))) {
-                    $cell.text(i + 1).each(hovers).click(function () {
-                        var me = $(this),
-                            picDateObj = new Date($('select[name=year]', $picker).val(), $('select[name=month]', $picker).val(), me.text());
-                        $chosen.removeClass('chosen');
-                        me.addClass('chosen');
-                        closeIt(el, $picker, picDateObj);
-                    });
+                    $cell.text(i + 1).each(My.hovers).click(clicky);
                     if (1 + i === picD.getDate() && m === picD.getMonth() && y === picD.getFullYear()) {
                         $chosen = $cell.addClass('chosen');
                     }
@@ -147,50 +156,44 @@
                     }
                 }
             }
-        }
+        };
 
-        function leaper (y, m) {
+        My.leaper = function (y, m) {
             var n = mlengths[m];
-            if (m * 1 === 1 && ((y % 4 === 0 && y % 100 !== 0) || y % 400 === 0))
-                n = 29;
+            if ((1 * m === 1) && ((y % 4 === 0 && y % 100 !== 0) || y % 400 === 0)) n = 29;
             return n;
-        }
+        };
 
-        function beggar (c,o) {
+        My.beggar = function (c, o) {
             if (o.constructor === Date) {
                 c.M = o.getMonth();
                 c.D = o.getDate();
             }
-        }
+        };
 
-        function hovers() {
+        My.hovers = function () {
             var a = function () {
-                $(this).addClass('over')
+                $(this).addClass('over');
             },  b = function () {
-                $(this).removeClass('over')
+                $(this).removeClass('over');
             };
             $(this).addClass('date').hover(a, b);
-        }
+        };
 
-        function closeIt($fld, $picker, dateObj) {
-            if (dateObj && dateObj.constructor === Date)
-                $fld.val($.fn.simcal.formatOutput(dateObj));
+        My.hide = function ($fld, $picker, dateObj) {
+            if (dateObj && dateObj.constructor === Date) $fld.val(formatOutput(dateObj));
             $picker.fadeOut(333, function () {
                 $(this).remove();
             });
             $picker = null;
             $fld.removeClass('picker');
             $fld.trigger('keyup').trigger('change').focus();
-        }
+        };
 
-        function parse(x) {
-            return parseInt(x, 10);
-        }
-
-        function openIt() {
-            var me = $(this),
-                elPos = me.offset(),
-                iniD, picD, $picker;
+        My.show = function () {
+            var me = $(this)
+            ,   elPos = me.offset()
+            ,   iniD, picD, $picker;
             if (!me.is('.picker')) {
                 me.addClass('picker');
                 iniD = me.val();
@@ -200,45 +203,48 @@
                 else if (O.picD) picD = new Date(O.picD);
                 else picD = today;
 
-                $picker = makeHTML().prependTo($('body')).css({
+                $picker = My.makeHTML().prependTo($('body')).css({
                     position: 'absolute',
                     left: elPos.left,
                     top: elPos.top + O.icon
                 });
                 $('span', $picker).css('cursor', 'pointer');
                 $('select', $picker).bind('change.simcal', function () {
-                    loadM(null, me, $picker, picD);
+                    My.loadM(null, me, $picker, picD);
                 });
                 $('span.prevMonth', $picker).click(function (e) {
-                    loadM(e, me, $picker, picD);
+                    My.loadM(e, me, $picker, picD);
                 });
                 $('span.nextMonth', $picker).click(function (e) {
-                    loadM(e, me, $picker, picD);
+                    My.loadM(e, me, $picker, picD);
                 });
                 $('span.today', $picker).click(function () {
-                    closeIt(me, $picker, new Date());
+                    My.hide(me, $picker, new Date());
                 });
                 $('span.close', $picker).click(function () {
-                    closeIt(me, $picker);
+                    My.hide(me, $picker);
                 });
                 $picker.sel('m').selectedIndex = picD.getMonth();
                 $picker.sel('y').selectedIndex = Math.max(0, picD.getFullYear() - O.begY);
-                loadM(null, me, $picker, picD);
+                My.loadM(null, me, $picker, picD);
             }
-        }
+        };
+
+        My.setupRange();
 
         return this.each(function () {
             var me = $(this);
             if (!(me.is('input')) || ('text' !== me.prop('type'))) return;
-            me.addClass('simcal').removeClass('picker');
-            me.bind('keydown.simcal', function () {
+            me.addClass('simcal').removeClass('picker')
+            // My.hide if keyboard is used
+            .bind('keydown.simcal', function () {
                 $('span.close').trigger('click');
-            }).bind('mousedown.simcal', openIt);
+            })
+            // custom event fires private handler
+            .bind('show.simcal', My.show);
         });
     };
-    $.fn.simcal.formatOutput = function (dateObj) {
-        return [dateObj.getMonth() + 1, dateObj.getDate(), dateObj.getFullYear()].join('/');
-    };
+
     $.fn.simcal.defaults = {
         icon: 16,
         picD: today,
@@ -247,7 +253,17 @@
         x: - 1,
         y: 18
     };
-    $(function () {
+
+    $.fn.simcal.install = function () { // method to delegate binding
+        // unify trigger into custom event
+        $('form').delegate(':input.simcal', 'mousedown.simcal', function () {
+            $(this).trigger('show.simcal');
+        });
+        // text fields
+        $('.simcal').simcal();
+    };
+
+    $(function () { // class for generic auto-binding
         $('.calpick').simcal();
     });
-})(jQuery);
+}(jQuery));

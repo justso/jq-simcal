@@ -1,11 +1,12 @@
-/*global  console, Date, Math, jQuery, parseInt, $ */
+/*global  console , $ , Date , Math , jQuery , parseInt */
+
 (function ($) {
     var today = new Date()
-    ,    months = 'Jan Feb March April May June July Aug Sept Oct Nov Dec'.split(' ')
-    ,    mlengths = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
-    ,    dateRE = /^\d{1,2}\/\d{1,2}\/\d{2}|\d{4}$/
-    ,    yearRE = /^\d{4,4}$/
-    ,    $chosen, $today
+    ,   months = 'Jan Feb March April May June July Aug Sept Oct Nov Dec'.split(' ')
+    ,   mlengths = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
+    ,   dateRE = /^\d{1,2}\/\d{1,2}\/\d{2}|\d{4}$/
+    ,   yearRE = /^\d{4,4}$/
+    ,   $chosen, $today
     ;
     function parse(x) {
         return parseInt(x, 10);
@@ -56,18 +57,20 @@
             var years = []
             ,   $picker, Msel, Ysel, i
             ;
-            for (i = 0; i <= O.endY - O.begY; i++) years[i] = O.begY + i;
+            for (i = 0; i <= O.endY - O.begY; i++) {
+                years[i] = O.begY + i;
+            }
             $picker = $('<table class="simcal">');
             $picker.append('<thead>');
             $picker.append('<tfoot>');
             $picker.append('<tbody>');
             Msel = '<select name="month">';
-            for (i in months) {
+            for (i=0; i < months.length; i++) {
                 Msel += '<option value="' + i + '">' + months[i] + '</option>';
             }
             Msel += '</select>';
             Ysel = '<select name="year">';
-            for (i in years) {
+            for (i=0; i < years.length; i++) {
                 Ysel += '<option>' + years[i] + '</option>';
             }
             Ysel += '</select>';
@@ -86,7 +89,9 @@
                 str = (str === 'y' ? 'year' : str);
                 return $(this).find('select[name=' + str + ']').get(0);
             };
-            if ($.fn.nosel) $p.nosel();
+            if ($.fn.nosel) {
+                $p.nosel();
+            }
             return $p;
         };
 
@@ -119,10 +124,16 @@
                     $picker.sel('m').selectedIndex = mo;
                 }
             }
-            if (0 === mo && !yr) $('span.prevMonth', $picker).css('visibility', 'hidden');
-            else $('span.prevMonth', $picker).css('visibility', 'visible');
-            if (yr + 1 === yrs && 11 === mo) $('span.nextMonth', $picker).css('visibility', 'hidden');
-            else $('span.nextMonth', $picker).css('visibility', 'visible');
+            if (0 === mo && !yr) {
+                $('span.prevMonth', $picker).css('visibility', 'hidden');
+            } else {
+                $('span.prevMonth', $picker).css('visibility', 'visible');
+            }
+            if (yr + 1 === yrs && 11 === mo) {
+                $('span.nextMonth', $picker).css('visibility', 'hidden');
+            } else {
+                $('span.nextMonth', $picker).css('visibility', 'visible');
+            }
 
             $cells = $('tbody td', $picker).unbind('.simcal').empty().removeClass('date');
             m = parse($('select[name=month]', $picker).val());
@@ -132,7 +143,9 @@
             numdays = My.leaper(y, m);
             My.beggar(beg, O.begD);
             My.beggar(end, O.endD);
-            if ($today) $today.removeClass('today');
+            if ($today) {
+                $today.removeClass('today');
+            }
             clicky = function () {
                 var me = $(this)
                 ,   picDateObj  = new Date(
@@ -160,7 +173,9 @@
 
         My.leaper = function (y, m) {
             var n = mlengths[m];
-            if ((1 * m === 1) && ((y % 4 === 0 && y % 100 !== 0) || y % 400 === 0)) n = 29;
+            if ((1 * m === 1) && ((y % 4 === 0 && y % 100 !== 0) || y % 400 === 0)) {
+                n = 29;
+            }
             return n;
         };
 
@@ -181,7 +196,9 @@
         };
 
         My.hide = function ($fld, $picker, dateObj) {
-            if (dateObj && dateObj.constructor === Date) $fld.val(formatOutput(dateObj));
+            if (dateObj && dateObj.constructor === Date) {
+                $fld.val(formatOutput(dateObj));
+            }
             $picker.fadeOut(333, function () {
                 $(this).remove();
             });
@@ -198,10 +215,15 @@
                 me.addClass('picker');
                 iniD = me.val();
 
-                if (iniD && dateRE.test(iniD)) picD = new Date(iniD);
-                else if (O.picD.constructor === Date) picD = O.picD;
-                else if (O.picD) picD = new Date(O.picD);
-                else picD = today;
+                if (iniD && dateRE.test(iniD)) {
+                    picD = new Date(iniD);
+                } else if (O.picD.constructor === Date) {
+                    picD = O.picD;
+                } else if (O.picD) {
+                    picD = new Date(O.picD);
+                } else {
+                    picD = today;
+                }
 
                 $picker = My.makeHTML().prependTo($('body')).css({
                     position: 'absolute',
@@ -234,7 +256,9 @@
 
         return this.each(function () {
             var me = $(this);
-            if (!(me.is('input')) || ('text' !== me.prop('type'))) return;
+            if (!(me.is('input')) || ('text' !== me.prop('type'))) {
+                return;
+            }
             me.addClass('simcal').removeClass('picker')
             // My.hide if keyboard is used
             .bind('keydown.simcal', function () {
@@ -266,4 +290,5 @@
     $(function () { // class for generic auto-binding
         $('.calpick').simcal();
     });
+
 }(jQuery));

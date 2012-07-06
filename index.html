@@ -2,13 +2,13 @@
 <html>
 <head>
     <meta charset='utf-8'>
-    <title>dvdrtrgn/simcal @ GitHub</title>
-    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.js" type="text/javascript"></script>
-    <script src="https://raw.github.com/dvdrtrgn/simcal/master/simcal.js" type="text/javascript"></script>
+    <title>dvdrtrgn/jq-simcal @ GitHub</title>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.js" type="text/javascript"></script>
+    <script src="https://raw.github.com/dvdrtrgn/jq-simcal/master/simcal.js" type="text/javascript"></script>
     <style type="text/css">
-    body {
+body {
         margin-top: 1.0em;
-        background-color: #ffffff;
+        background-color: #fafafa;
         color: #000000;
     }
     #container {
@@ -35,11 +35,12 @@
         color: #000000;
     }
     a {
+        border: 2px solid white;
+        border-bottom-color: #933;
         color: #000000;
         display: inline-block;
+        padding: .1em .25em;
         text-decoration: none;
-        border: 3px solid white;
-        border-bottom-color: #933;
     }
     a:hover {
         background-color: #eee;
@@ -153,56 +154,60 @@
     </style>
 </head>
 <body>
-    <a href="http://github.com/dvdrtrgn/simcal"><img class="c1" src="http://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"></a>
+    <a href="http://github.com/dvdrtrgn/jq-simcal"><img class="c1" src="http://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"></a>
     <div id="container">
         <div class="download">
-            <a href="http://github.com/dvdrtrgn/simcal/zipball/master"><img border="0" width="90" src="http://github.com/images/modules/download/zip.png"></a> <a href="http://github.com/dvdrtrgn/simcal/tarball/master"><img border="0" width="90" src="http://github.com/images/modules/download/tar.png"></a>
+            <a href="http://github.com/dvdrtrgn/jq-simcal/zipball/master"><img border="0" width="90" src="https://github.com/images/modules/download/zip.png"></a> <!-- -->
+             <a href="http://github.com/dvdrtrgn/jq-simcal/tarball/master"><img border="0" width="90" src="https://github.com/images/modules/download/tar.png"></a>
         </div>
-        <h1><a href="http://github.com/dvdrtrgn/simcal">simcal</a> <span class="small">by <a href="http://github.com/dvdrtrgn">dvdrtrgn</a></span></h1>
+        <h1><a href="http://github.com/dvdrtrgn/jq-simcal">simcal</a> <span class="small">by <a href="http://github.com/dvdrtrgn">dvdrtrgn</a></span></h1>
         <div class="description">
-            rewrite of a simple cal implementation for jquery
+            rewrite of a simple calendar implementation for jquery
         </div>
-        <p>It was hard finding a ultra minimal but jquery based plugin. I found a lot of abandoned projects and overly complex Web1.0 stuff. This looks like the best starting point. Lifted wholesale from <a href="http://teddevito.com/demos/calendar.php">http://teddevito.com/demos/calendar.php</a></p>
-        <!--        insert          -->
+        <p>It was hard finding a ultra minimal but jquery based plugin.
+        <br>
+        I found a lot of abandoned projects and overly complex <i>dhtml</i> stuff.
+        <br>
+        This looks like the best starting point.
+        <br>
+        Lifted wholesale from <a href="http://teddevito.com/demos/calendar.php">http://teddevito.com/demos/calendar.php</a></p>
         <hr>
+        <!--        insert          -->
+        <p>Some test inputs, each with a different setup:</p>
+        <p>input.one <input class="one calpick" type="text" name="date" value="1/1/2011"></p>
+        <p>input.two <input class="two" type="text" name="date" value=""></p>
+        <p>input.three <input class="three" type="text" name="date" value=""></p>  <!-- -->
         <script type="text/javascript">
-$(function () {
-        $('input.one').simcalPicker();
-        $('input.two').simcalPicker({ startdate: 2008, enddate: 2012 });
-        $('input.three').simcalPicker({ chosendate: '9/9/2010', startdate: '6/10/2008', enddate: '7/20/2011' });
+        $(function () {
+            $('input.one').simcal();
+            $('input.two').simcal({ startdate: 2008, enddate: 2012 });
+            $('input.three').simcal({ chosendate: '9/9/2010', startdate: '6/10/2008'});
         });
         </script>
-        <p>Some test inputs, each with a different setup:</p>
-        <p>input.one <input class="one" type="text" name="date" value=""> <input class="one" type="text" name="date" value="1/1/2011"></p>
-        <p>input.two <input class="two" type="text" name="date" value=""></p>
-        <p>input.three <input class="three" type="text" name="date" value=""></p>
         <pre>
-$('input.one').simcalPicker();
-$('input.two').simcalPicker({
-    startdate: 2008, enddate: 2012
-});
-$('input.three').simcalPicker({
-    chosendate: '9/9/2010', startdate: '6/10/2008', enddate: '7/20/2011'
-});
+$('input.one').simcal();
+$('input.two').simcal({ startdate: 2008, enddate: 2012 });
+$('input.three').simcal({ chosendate: '9/9/2010', startdate: '6/10/2008'});
+$.fn.simcal.install();
 </pre>
         <hr>
         <!--        inserted          -->
         <h2>Dependencies</h2>
-        <p> &gt; jquery-1.4</p>
+        <p>&gt; jquery-1.6</p>
         <h2>Install</h2>
         <pre>
     &lt;script src="simcal.js"&gt;&lt;/script&gt;
-    $('input[type=text]').simcalPicker();
+    $('input[type=text]').simcal();
 </pre>
         <h2>Download</h2>
-        <p>You can download this project in either <a href="http://github.com/dvdrtrgn/simcal/zipball/master">zip</a> or <a href="http://github.com/dvdrtrgn/simcal/tarball/master">tar</a> formats.</p>
+        <p>You can download this project in either <a href="http://github.com/dvdrtrgn/jq-simcal/zipball/master">zip</a> or <a href="http://github.com/dvdrtrgn/jq-simcal/tarball/master">tar</a> formats.</p>
         <p>You can also clone the project with <a href="http://git-scm.com">Git</a> by running:</p>
         <pre>
-$ git clone git://github.com/dvdrtrgn/simcal
+$ git clone git://github.com/dvdrtrgn/jq-simcal
 </pre>
         <p></p>
         <div class="footer">
-            get the source code on GitHub : <a href="http://github.com/dvdrtrgn/simcal">dvdrtrgn/simcal</a>
+            get the source code on GitHub : <a href="http://github.com/dvdrtrgn/jq-simcal">dvdrtrgn/jq-simcal</a>
         </div>
     </div>
 </body>

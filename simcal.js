@@ -274,13 +274,17 @@
         picD: today,
         begD: today.getFullYear() - 11,
         endD: today.getFullYear() + 11,
-        x: - 1,
+        x: -1,
         y: 18
     };
 
     $.fn.simcal.install = function () { // method to delegate binding
         // unify trigger into custom event
-        $('form').delegate(':input.simcal', 'mousedown.simcal', function () {
+        var ON = !!($.fn.on) // newer jquery
+        ,   A1 = 'mousedown.simcal'
+        ,   A2 = ':input.simcal'
+        ;
+        $('form')[ON?'on':'delegate'](ON?A1:A2, ON?A2:A1, function () {
             $(this).trigger('show.simcal');
         });
         // text fields

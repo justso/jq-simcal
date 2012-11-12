@@ -291,8 +291,6 @@
         $('.simcal').simcal();
     };
 
-    $(function () { // class for generic auto-binding
-        $('.calpick').simcal();
-    });
+    $($.fn.simcal.install);
 
 }(jQuery));

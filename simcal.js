@@ -284,10 +284,10 @@
         ,   A1 = 'mousedown.simcal'
         ,   A2 = ':input.simcal'
         ;
-        $('form')[ON?'on':'delegate'](ON?A1:A2, ON?A2:A1, function () {
+        $('body')[ON?'on':'delegate'](ON?A1:A2, ON?A2:A1, function () {
             $(this).trigger('show.simcal');
         });
-        // text fields
+        // existing candidates
         $('.simcal').simcal();
     };
 

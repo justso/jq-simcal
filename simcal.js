@@ -14,6 +14,9 @@
     function formatOutput(dateObj) {
         return [dateObj.getMonth() + 1, dateObj.getDate(), dateObj.getFullYear()].join('/');
     }
+    function closeAll () {
+        $('.simcal span.close').trigger('click');
+    }
 
     $.fn.simcal = function (options) {
         var My = {}
@@ -211,6 +214,7 @@
             var me = $(this)
             ,   elPos = me.offset()
             ,   iniD, picD, $picker;
+            closeAll();
             if (!me.is('.picker')) {
                 me.addClass('picker');
                 iniD = me.val();
@@ -262,7 +266,7 @@
             me.addClass('simcal').removeClass('picker')
             // My.hide if keyboard is used
             .bind('keydown.simcal', function () {
-                $('span.close').trigger('click');
+                closeAll();
             })
             // custom event fires private handler
             .bind('show.simcal', My.show);
